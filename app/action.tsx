@@ -1,7 +1,8 @@
-import { createAI } from "ai/rsc";
+import { createAI, getMutableAIState } from "ai/rsc";
 
-async function submit() {
-  // todo
+async function submitDocs(docsPrompt: string) {
+  const aiState = getMutableAIState<typeof AI>()
+
 }
 
 const initialAIState: {
@@ -17,7 +18,7 @@ const initialUIState: {
 
 export const AI = createAI({
   actions: {
-    submit,
+    submitDocs,
   },
   initialUIState,
   initialAIState,

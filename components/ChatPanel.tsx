@@ -14,12 +14,16 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Button } from "./ui/button";
+import { AI } from "@/app/action";
+import { useActions } from "ai/rsc";
 
 const formSchema = z.object({
   docs: z.string().min(20),
 });
 
 const ChatPanel = (): React.JSX.Element => {
+  const { submitDocs } = useActions<typeof AI>();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -27,10 +31,11 @@ const ChatPanel = (): React.JSX.Element => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    const response = await submitDocs(values.docs);
   }
 
   return (
