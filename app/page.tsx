@@ -1,3 +1,4 @@
+import { ChatMessages } from "@/components/ChatMessages";
 import ChatPanel from "@/components/ChatPanel";
 
 export default function Home() {
@@ -5,6 +6,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col p-24">
       <h1>AI React Katas Builder</h1>
       <ChatPanel />
+      <ChatMessages />
     </main>
   );
 }

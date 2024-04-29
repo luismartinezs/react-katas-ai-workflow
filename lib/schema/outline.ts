@@ -15,17 +15,18 @@ import { z } from 'zod'
 }
 */
 
+export const outlineItemSchema = z.object(
+  {
+    title: z.string(),
+    subitems: z.array(z.string()).nonempty()
+  }
+).required({
+  title: true
+})
+
 export const outlineSchema = z.object({
-  items: z.object(
-    {
-      title: z.string(),
-      items: z.array(z.object(
-        {
-          title: z.string(),
-          subitems: z.array(z.string()).min(2).max(5).nonempty()
-        }
-      )).nonempty()
-    }
-  )
+  outlineTitle: z.string(),
+  items: z.array(outlineItemSchema)
 })
 export type PartialOutline = DeepPartial<typeof outlineSchema>
+// export type OutlineItem = typeof outlineItemSchema

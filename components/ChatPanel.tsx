@@ -15,7 +15,7 @@ import {
 } from "./ui/form";
 import { Button } from "./ui/button";
 import { AI } from "@/app/action";
-import { useActions } from "ai/rsc";
+import { useActions, useUIState } from "ai/rsc";
 
 const formSchema = z.object({
   docs: z.string().min(20),
@@ -23,6 +23,7 @@ const formSchema = z.object({
 
 const ChatPanel = (): React.JSX.Element => {
   const { submitDocs } = useActions<typeof AI>();
+  const [messages, setMessages] = useUIState<typeof AI>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,8 +35,12 @@ const ChatPanel = (): React.JSX.Element => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
     const response = await submitDocs(values.docs);
+    if (!response) {
+      console.error("No response from submitDocs")
+      return;
+    }
+    setMessages([...messages, response]);
   }
 
   return (
