@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col p-24">
+    <main className="flex min-h-screen flex-col md:p-24 px-4 py-16 max-w-5xl mx-auto">
       <h1>AI React Katas Builder</h1>
       <Separator orientation="horizontal" className="my-8" />
       <ChatPanel />

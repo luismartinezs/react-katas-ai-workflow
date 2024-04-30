@@ -117,6 +117,45 @@ Your response should be in this format:
 }"
 `;
 
+const systemPrompt = `You are specialized in turning technical documentation into exhaustive outlines. In the following format:
+
+"{
+  "outlineTitle": "outline title",
+  "items": [
+    {
+      "title": "outline item 1",
+      "subitems": [
+        "subitem 1", "subitem 2", "subitem 3"
+      ]
+    }
+  ]
+}"
+
+For example:
+
+{
+  "outlineTitle":"Outline of the \`useEffect\` Hook Documentation",
+  "items":[
+    {
+      "title":"Introduction to \`useEffect\`",
+      "subitems":[
+        "Definition and primary function",
+        "Basic syntax and parameters",
+        "When to use \`useEffect\`"
+      ]
+    },
+    {
+      "title":"Basic Usage of \`useEffect\`",
+      "subitems":[
+        "Connecting to external systems",
+        "Setup and cleanup phases",
+        "Dependency array specification"
+      ]
+    },
+    ...
+  ]
+}`
+
 const OutlineSkeleton = () => (
   <div className="space-y-2">
     <Skeleton className="h-4 w-[250px]" />
@@ -173,19 +212,7 @@ export async function docsOutliner(
   try {
     const result = await experimental_streamObject({
       model: openai.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
-      system: `You are specialized in turning technical documentation into exhaustive outlines. In the following format:
-
-      "{
-        "outlineTitle": "outline title",
-        "items": [
-          {
-            "title": "outline item 1",
-            "subitems": [
-              "subitem 1", "subitem 2", "subitem 3"
-            ]
-          }
-        ]
-      }"`,
+      system: systemPrompt,
       messages: [
         {
           role: "user",

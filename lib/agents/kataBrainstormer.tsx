@@ -13,23 +13,47 @@ export const openai = createOpenAI({
   apiKey: env.OPENAI_API_KEY,
 });
 
-const mockIdeas: PartialKataIdeas = [
-  {
-    title: "Building a Custom useWindowSize Hook",
-    description:
-      "Create a custom Hook named `useWindowSize` that listens for window resize events and provides the current window dimensions (width and height) to any component that utilizes this Hook. This exercise will help you practice using `useEffect` to handle browser events and clean them up properly. Your Hook should return an object containing the `width` and `height` of the window, and it should ensure that it cleans up the event listener when the component using the Hook unmounts or re-renders.",
-  },
-  {
-    title: "Implementing a useOnlineStatus Hook",
-    description:
-      "Develop a useOnlineStatus Hook that monitors and returns the browser's online status. This Hook should use useEffect to add and remove event listeners for the online and offline window events. The Hook should provide a single boolean value indicating whether the user is currently online or not. This exercise will challenge you to handle global events and manage state that reflects the current environment outside of the React application.",
-  },
-  {
-    title: "Creating a useInterval Custom Hook",
-    description:
-      "Construct a useInterval Hook that abstracts setInterval to make it easy for components to run code at specified intervals. The Hook should take a callback function and an interval time in milliseconds as parameters. It should handle setting up the interval when the component mounts, clearing the interval when the component unmounts, and properly handling changes to the interval or the callback function without causing multiple intervals to run simultaneously. This kata will test your ability to combine effects with cleanup logic and dependency management.",
-  },
-];
+export const mockIdeas: PartialKataIdeas = {
+  ideas: [
+    {
+      title: "Building a Custom useWindowSize Hook",
+      description:
+        "Create a custom Hook named `useWindowSize` that listens for window resize events and provides the current window dimensions (width and height) to any component that utilizes this Hook. This exercise will help you practice using `useEffect` to handle browser events and clean them up properly. Your Hook should return an object containing the `width` and `height` of the window, and it should ensure that it cleans up the event listener when the component using the Hook unmounts or re-renders.",
+    },
+    {
+      title: "Implementing a useOnlineStatus Hook",
+      description:
+        "Develop a useOnlineStatus Hook that monitors and returns the browser's online status. This Hook should use useEffect to add and remove event listeners for the online and offline window events. The Hook should provide a single boolean value indicating whether the user is currently online or not. This exercise will challenge you to handle global events and manage state that reflects the current environment outside of the React application.",
+    },
+    {
+      title: "Creating a useInterval Custom Hook",
+      description:
+        "Construct a useInterval Hook that abstracts setInterval to make it easy for components to run code at specified intervals. The Hook should take a callback function and an interval time in milliseconds as parameters. It should handle setting up the interval when the component mounts, clearing the interval when the component unmounts, and properly handling changes to the interval or the callback function without causing multiple intervals to run simultaneously. This kata will test your ability to combine effects with cleanup logic and dependency management.",
+    },
+  ],
+};
+
+const systemPrompt = `You are an AI specialized in generating exercise ideas based on technical specifications. In the following format:
+
+"{
+  "ideas": [{
+    "title": "exercise title",
+    "description": "exercise description"
+  }]
+}"
+
+For example:
+
+{
+  "ideas":[
+    {
+      "title":"Building a Custom useWindowSize Hook",
+      "description":"Create a custom Hook named \`useWindowSize\` that listens for window resize events and provides the current window dimensions (width and height) to any component that utilizes this Hook. This exercise will help you practice using \`useEffect\` to handle browser events and clean them up properly. Your Hook should return an object containing the \`width\` and \`height\` of the window, and it should ensure that it cleans up the event listener when the component using the Hook unmounts or re-renders."
+    },
+    ...
+  ]
+}
+`
 
 const userPrompt = (topic: string) => `I want to create a kata about this:
 
@@ -46,7 +70,8 @@ Your response should be in this format:
   "title": "exercise title",
   "description": "exercise description"
 }]"
-`;
+
+Consider only modern React (hooks), so avoid class components, lifecycle methods, propTypes, mixins and higher order components.`;
 
 const KataIdeasSkeleton = () => (
   <div className="space-y-2">
@@ -87,16 +112,11 @@ export async function kataBrainstormer(
     return mockIdeas;
   }
 
-  let finalExercises: PartialKataIdeas = [];
+  let finalExercises: PartialKataIdeas = {};
   try {
     const result = await experimental_streamObject({
       model: openai.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
-      system: `You are an AI specialized in generating exercise ideas based on technical specifications. In the following format:
-
-      "[{
-        "title": "exercise title",
-        "description": "exercise description"
-      }]"`,
+      system: systemPrompt,
       messages: [
         {
           role: "user",
