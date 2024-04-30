@@ -14,20 +14,71 @@ export const openai = createOpenAI({
 });
 
 const mockOutline = {
-  outlineTitle: "Mock useEffect outline",
+  outlineTitle: "Outline of the `useEffect` Hook Documentation",
   items: [
     {
-      title: "When to use",
+      title: "Introduction to `useEffect`",
       subitems: [
-        "When you want to perform side effects in function components",
-        "When you want to manage side effects in a declarative way",
+        "Definition and primary function",
+        "Basic syntax and parameters",
+        "When to use `useEffect`",
       ],
     },
     {
-      title: "When not to use",
+      title: "Basic Usage of `useEffect`",
       subitems: [
-        "When you want to perform side effects in class components",
-        "When you want to manage side effects in an imperative way",
+        "Connecting to external systems",
+        "Setup and cleanup phases",
+        "Dependency array specification",
+      ],
+    },
+    {
+      title: "Advanced Usage Scenarios",
+      subitems: [
+        "Wrapping effects in custom Hooks",
+        "Controlling non-React widgets",
+        "Fetching data with effects",
+      ],
+    },
+    {
+      title: "Handling Dependencies",
+      subitems: [
+        "Specifying reactive dependencies",
+        "Common mistakes with dependency arrays",
+        "Removing unnecessary dependencies",
+      ],
+    },
+    {
+      title: "Performance and Optimization",
+      subitems: [
+        "Avoiding unnecessary re-renders",
+        "Reducing the frequency of effect execution",
+        "Using `useMemo` and `useCallback` to optimize performance",
+      ],
+    },
+    {
+      title: "Troubleshooting Common Issues",
+      subitems: [
+        "Effect runs twice during component mounts",
+        "Infinite loops and effect re-executions",
+        "Flickering or unexpected visual outputs",
+        "Cleanup logic running unexpectedly",
+      ],
+    },
+    {
+      title: "Special Considerations",
+      subitems: [
+        "Differences between `useEffect` and `useLayoutEffect`",
+        "Effects in Strict Mode",
+        "Server vs. client rendering differences",
+      ],
+    },
+    {
+      title: "Best Practices and Recommendations",
+      subitems: [
+        "Writing resilient and isolated effects",
+        "Ensuring effects clean up after themselves",
+        "Strategies for debugging and refining effects",
       ],
     },
   ],
