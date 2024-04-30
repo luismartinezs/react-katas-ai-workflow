@@ -2,8 +2,9 @@
 
 import { PartialOutline } from "@/lib/schema/outline";
 import { useId, useState } from "react";
-import { useActions } from "ai/rsc";
+import { useActions, useUIState } from "ai/rsc";
 import { Button } from "./ui/button";
+import { AI } from "@/app/action";
 
 type OutlineProps = { outline: PartialOutline };
 
@@ -30,6 +31,7 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
   const titleId = useId();
   // State to keep track of checked items
   const [checkedItem, setCheckedItem] = useState<string>();
+  const [messages, setMessages] = useUIState<typeof AI>();
 
   // Handler to toggle checkbox state
   const handleChange = (event) => {
@@ -40,14 +42,19 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
     }
   };
 
-  function onSubmit(event) {
+  async function onSubmit(event) {
     event.preventDefault();
+    console.log("🚀 ~ onSubmit ~ checkedItem:", checkedItem);
     if (!checkedItem) {
       return;
     }
-    console.log(
-      JSON.stringify(checkedIdsToItems(checkedItem, outline), null, 2)
-    );
+
+    const response = await submitCheckedItems(checkedIdsToItems(checkedItem, outline));
+    if (!response) {
+      console.error("No response from submitCheckedItems");
+      return;
+    }
+    setMessages(prev => [...prev, response])
   }
 
   return (

@@ -40,7 +40,7 @@ const ChatPanel = (): React.JSX.Element => {
       console.error("No response from submitDocs")
       return;
     }
-    setMessages([...messages, response]);
+    setMessages(prev => [...prev, response]);
     form.setValue("docs", "")
   }
 

@@ -1,12 +1,60 @@
 import { Spinner } from "@/components/spinner";
 import { env } from "@/env";
 import { docsOutliner } from "@/lib/agents";
+import { kataBrainstormer } from "@/lib/agents/kataBrainstormer";
 import { createAI, createStreamableUI, getMutableAIState } from "ai/rsc";
 
-async function submitCheckedItems(formData: FormData) {
+async function submitCheckedItems({item, subitem}: {
+  item: string;
+  subitem: string;
+} ) {
   "use server";
 
+  console.log("🚀 ~ submitCheckedItems ~ item, subitem", item, subitem);
 
+  if (!item || !subitem) {
+    console.log("No item or subitem provided");
+
+    return;
+  }
+
+  const aiState = getMutableAIState<typeof AI>();
+  const uiStream = createStreamableUI();
+  uiStream.update(<Spinner />);
+
+
+  const topic = `${item}: ${subitem}`;
+
+  aiState.update([
+    ...aiState.get(),
+    {
+      role: "user",
+      content: `Topic selected for the kata: "${topic}"`,
+    }
+  ])
+
+  ;(async () => {
+    const kataIdeas = await kataBrainstormer(uiStream, topic, !!env.MOCK);
+
+    if (!kataIdeas) {
+      console.error("No kata ideas response");
+      return;
+    }
+
+    aiState.done([
+      ...aiState.get(),
+      {
+        role: "assistant",
+        content: JSON.stringify(kataIdeas),
+      },
+    ]);
+  })()
+
+
+  return {
+    id: Date.now(),
+    component: uiStream.value,
+  };
 }
 
 async function submitDocs(docsPrompt: string) {
