@@ -18,7 +18,7 @@ import { AI } from "@/app/action";
 import { useActions, useUIState } from "ai/rsc";
 
 const formSchema = z.object({
-  docs: z.string().min(20),
+  docs: z.string().min(3),
 });
 
 const ChatPanel = (): React.JSX.Element => {
@@ -41,10 +41,12 @@ const ChatPanel = (): React.JSX.Element => {
       return;
     }
     setMessages([...messages, response]);
+    form.setValue("docs", "")
   }
 
   return (
     <div>
+      <h2 className="text-xl font-bold">Chat panel</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField

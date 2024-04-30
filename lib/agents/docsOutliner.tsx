@@ -1,24 +1,41 @@
-import { createStreamableUI, createStreamableValue } from "ai/rsc";
+import { createStreamableUI } from "ai/rsc";
 import { PartialOutline, outlineSchema } from "../schema/outline";
 import { experimental_streamObject } from "ai";
 import { Section } from "@/components/Section";
 import { env } from "@/env";
-import { openai } from "../openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { DEFAULTS } from "../constants";
+import { Skeleton } from "@/components/ui/skeleton";
 import Outline from "@/components/Outline";
+import { sleep } from "../utils";
 
-export async function docsOutliner(
-  uiStream: ReturnType<typeof createStreamableUI>,
+export const openai = createOpenAI({
+  apiKey: env.OPENAI_API_KEY,
+});
+
+const mockOutline = {
+  outlineTitle: "Mock useEffect outline",
+  items: [
+    {
+      title: "When to use",
+      subitems: [
+        "When you want to perform side effects in function components",
+        "When you want to manage side effects in a declarative way",
+      ],
+    },
+    {
+      title: "When not to use",
+      subitems: [
+        "When you want to perform side effects in class components",
+        "When you want to manage side effects in an imperative way",
+      ],
+    },
+  ],
+};
+
+const userPrompt = (
   docsPrompt: string
-): Promise<PartialOutline> {
-  const objectStream = createStreamableValue<PartialOutline>();
-
-  uiStream.update(
-    <Section title="Outline" separator={true}>
-      <Outline outline={objectStream.value} />
-    </Section>
-  );
-
-  const userPrompt = `I want to create simple exercises that I call "katas" to practice a certain aspect of React.
+) => `I want to create simple exercises that I call "katas" to practice a certain aspect of React.
 
 I will first provide you with the documentation of the relevant documentation on the topic. Here they are:
 
@@ -49,10 +66,62 @@ Your response should be in this format:
 }"
 `;
 
+const OutlineSkeleton = () => (
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-[250px]" />
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-[250px]" />
+      <div className="space-y-2 ml-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[250px]" />
+      </div>
+    </div>
+  </div>
+);
+
+/**
+ * Generates an outline from technical documentation using an AI model. This function
+ * supports both live and mock data modes.
+ *
+ * @param {ReturnType<typeof createStreamableUI>} uiStream - The UI stream to update with new outlines.
+ * @param {string} docsPrompt - The technical documentation provided as input to the AI model.
+ * @param {boolean} [mock=false] - Flag to use mock data instead of streaming from the AI model.
+ *
+ * @returns {Promise<PartialOutline>} - The final outline generated from the documentation,
+ *                                      either from the AI model or mock data.
+ *
+ * The function initiates by displaying a skeleton loader. If in mock mode, it waits briefly
+ * before displaying a predefined mock outline and then completes. If not in mock mode,
+ * it streams data from the AI model, updating the UI with new content as it is received,
+ * and handles any errors during the process.
+ */
+export async function docsOutliner(
+  uiStream: ReturnType<typeof createStreamableUI>,
+  docsPrompt: string,
+  mock: boolean = false
+): Promise<PartialOutline> {
+  uiStream.update(
+    <Section title="Outline" separator={true}>
+      <OutlineSkeleton />
+    </Section>
+  );
+
+  if (mock) {
+    await sleep(700);
+    uiStream.update(
+      <Section title="Outline" separator={true}>
+        <Outline outline={mockOutline} />
+      </Section>
+    );
+    uiStream.done();
+    return mockOutline;
+  }
+
   let finalOutline: PartialOutline = {};
   try {
     const result = await experimental_streamObject({
-      model: openai.chat(env.OPENAI_API_MODEL || "gpt-3.5-turbo"),
+      model: openai.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
       system: `You are specialized in turning technical documentation into exhaustive outlines. In the following format:
 
       "{
@@ -69,21 +138,26 @@ Your response should be in this format:
       messages: [
         {
           role: "user",
-          content: userPrompt,
+          content: userPrompt(docsPrompt),
         },
       ],
       schema: outlineSchema,
     });
     for await (const obj of result.partialObjectStream) {
       if (obj) {
-        objectStream.update(obj);
         finalOutline = obj;
+        uiStream.update(
+          <Section title="Outline" separator={true}>
+            <Outline outline={obj} />
+          </Section>
+        );
       }
     }
   } catch (err) {
     console.error(err);
+    uiStream.update(<div>Error occurred while fetching data.</div>);
   } finally {
-    objectStream.done();
+    uiStream.done();
   }
 
   return finalOutline;

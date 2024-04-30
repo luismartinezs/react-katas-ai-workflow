@@ -1,10 +1,31 @@
 import { Spinner } from "@/components/spinner";
+import { env } from "@/env";
 import { docsOutliner } from "@/lib/agents";
-import { ExperimentalMessage } from "ai";
 import { createAI, createStreamableUI, getMutableAIState } from "ai/rsc";
 
+async function submitCheckedItems(formData: FormData) {
+  "use server";
+
+
+}
+
 async function submitDocs(docsPrompt: string) {
-  "use server"
+  "use server";
+  /*
+  - Usage
+  async submit (prompt) {
+    init ui stream
+
+    this IIFE is needed to that return value is not blocked by awaited promise
+    ;(async => {
+      await promise
+      update ui stream
+      close ui stream
+    })()
+
+    return ui stream
+  }
+  */
   if (!docsPrompt) {
     console.log("No docs prompt provided");
 
@@ -14,33 +35,29 @@ async function submitDocs(docsPrompt: string) {
   const aiState = getMutableAIState<typeof AI>();
   const uiStream = createStreamableUI();
 
-  uiStream.update(<Spinner />)
+  uiStream.update(<Spinner />);
 
-  const messages: ExperimentalMessage[] = aiState.get() as any;
+  (async () => {
+    const outline = await docsOutliner(uiStream, docsPrompt, !!env.MOCK);
 
-  messages.push({
-    role: "user",
-    content: docsPrompt,
-  })
+    if (!outline) {
+      console.error("No outline response");
+      return;
+    }
 
-  const outline = await docsOutliner(uiStream, docsPrompt);
-
-  console.log(JSON.stringify(outline, null, 2));
-
-  uiStream.done()
-  aiState.done([
-    ...aiState.get(),
-    {
-      role: "assistant",
-      content: JSON.stringify(outline),
-    },
-  ])
-
+    aiState.done([
+      ...aiState.get(),
+      {
+        role: "assistant",
+        content: JSON.stringify(outline),
+      },
+    ]);
+  })();
 
   return {
     id: Date.now(),
     component: uiStream.value,
-  }
+  };
 }
 
 const initialAIState: {
@@ -57,6 +74,7 @@ const initialUIState: {
 export const AI = createAI({
   actions: {
     submitDocs,
+    submitCheckedItems,
   },
   initialUIState,
   initialAIState,
