@@ -35,4 +35,7 @@ input[type="radio"] {
   h1,h2,h3,h4,h5,h6 {
     @apply my-2 font-semibold;
   }
+  ul {
+    @apply list-disc ml-4;
+  }
 }

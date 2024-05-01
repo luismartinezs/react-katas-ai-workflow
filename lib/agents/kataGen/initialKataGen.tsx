@@ -1,4 +1,10 @@
-export const mockInitial = `import { useState, useEffect } from 'react'
+import { env } from "@/env";
+import { DEFAULTS } from "@/lib/constants";
+import { openaiProvider } from "@/lib/openai";
+import { experimental_streamText } from "ai";
+
+export const mockInitial = `\`\`\`tsx
+import { useState, useEffect } from 'react'
 
 interface WindowSize {
   width: number
@@ -29,7 +35,7 @@ export const useWindowSize = (): WindowSize => {
   return windowSize
 }
 
-export const WindowSize = (): React.JSX.Element => {
+export default (): React.JSX.Element => {
   const { width, height } = useWindowSize()
 
   return (
@@ -44,5 +50,41 @@ export const WindowSize = (): React.JSX.Element => {
     </div>
   )
 }
-`;
+\`\`\``;
 
+const getUserPrompt = (finalKata:string, title:string, description:string) => (`This is a completed version of a React code:
+
+${finalKata}
+
+Your task is to provide an initial and incomplete version that the student needs to solve.
+
+To determine what parts of the code to omit for the student to complete, take into consideration the description of the exercise:
+
+Title: ${title}
+
+Description:
+${description}
+
+Add comments with "// TODO:" where the student needs to complete the code.
+
+Provide only the code, written within a code block.`)
+
+const systemPrompt = `You are a extremely skillful senior React developer, specialized in crafting optimal functional components using modern state-of-the-art React. Your code always follows best coding practices and is expertly written and very readable. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`
+
+export async function genKataInitial(
+  finalKata:string,
+  title: string,
+  description: string,
+) {
+  const result = await experimental_streamText({
+    model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+    system: systemPrompt,
+    prompt: getUserPrompt(
+      finalKata,
+      title,
+      description
+    ),
+  })
+
+  return result
+}

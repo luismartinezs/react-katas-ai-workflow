@@ -34,7 +34,7 @@ export const useWindowSize = (): WindowSize => {
   return windowSize
 }
 
-export const WindowSize = (): React.JSX.Element => {
+export default (): React.JSX.Element => {
   const { width, height } = useWindowSize()
 
   return (
@@ -60,13 +60,15 @@ Description: ${description}
 First, I'm going to provide a coding style that I want you to use:
 
 interface Props {
-  // Add props here
+  // Component props
 }
 
-export const SampleComponent = (props: Props): React.JSX.Element => {
+// other code (child components, hooks, etc)
+
+export default (props: Props): React.JSX.Element => {
   return (
     <div>
-      {/* Add your code here */}
+      {/* code */}
     </div>
   );
 };
@@ -77,9 +79,7 @@ The tech stack is: React 18, tailwind, typescript.
 
 Your task is to create the final, completed and solved version of the code for a "kata" that  serves to practice the above topic.
 
-Keep the code self contained, avoid using third party libraries, or mock them.
-
-Provide only the component, written within a code block.`)
+Keep the code self contained, avoid using third party libraries, or mock them. The code must render some kind of UI that allows to visualize the result of the code execution in the browser. Provide only the code, written within a code block. The root or top level component should be a default export.`)
 
 const systemPrompt = `You are a extremely skillful senior React developer, specialized in crafting optimal functional components using modern state-of-the-art React. Your code always follows best coding practices and is expertly written and very readable. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`
 
