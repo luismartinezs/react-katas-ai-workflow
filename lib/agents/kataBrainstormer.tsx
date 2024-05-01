@@ -2,16 +2,12 @@ import { createStreamableUI } from "ai/rsc";
 import { experimental_streamObject } from "ai";
 import { Section } from "@/components/Section";
 import { env } from "@/env";
-import { createOpenAI } from "@ai-sdk/openai";
 import { DEFAULTS } from "../constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sleep } from "../utils";
 import { KataIdeas } from "@/components/KataIdeas";
 import { PartialKataIdeas, kataIdeasSchema } from "../schema/kataIdeas";
-
-export const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY,
-});
+import { openaiProvider } from "../openai";
 
 export const mockIdeas: PartialKataIdeas = {
   ideas: [
@@ -115,7 +111,7 @@ export async function kataBrainstormer(
   let finalExercises: PartialKataIdeas = {};
   try {
     const result = await experimental_streamObject({
-      model: openai.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+      model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
       system: systemPrompt,
       messages: [
         {

@@ -34,7 +34,7 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
   const [messages, setMessages] = useUIState<typeof AI>();
 
   // Handler to toggle checkbox state
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
 
     if (checked) {
@@ -42,19 +42,21 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
     }
   };
 
-  async function onSubmit(event) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log("🚀 ~ onSubmit ~ checkedItem:", checkedItem);
     if (!checkedItem) {
       return;
     }
 
-    const response = await submitCheckedItems(checkedIdsToItems(checkedItem, outline));
+    const response = await submitCheckedItems(
+      checkedIdsToItems(checkedItem, outline)
+    );
     if (!response) {
       console.error("No response from submitCheckedItems");
       return;
     }
-    setMessages(prev => [...prev, response])
+    setMessages((prev) => [...prev, response]);
   }
 
   return (

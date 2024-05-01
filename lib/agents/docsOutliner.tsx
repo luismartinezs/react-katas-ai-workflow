@@ -3,15 +3,11 @@ import { PartialOutline, outlineSchema } from "../schema/outline";
 import { experimental_streamObject } from "ai";
 import { Section } from "@/components/Section";
 import { env } from "@/env";
-import { createOpenAI } from "@ai-sdk/openai";
 import { DEFAULTS } from "../constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import Outline from "@/components/Outline";
 import { sleep } from "../utils";
-
-export const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY,
-});
+import { openaiProvider } from "../openai";
 
 const mockOutline = {
   outlineTitle: "Outline of the `useEffect` Hook Documentation",
@@ -170,7 +166,7 @@ export async function docsOutliner(
   let finalOutline: PartialOutline = {};
   try {
     const result = await experimental_streamObject({
-      model: openai.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+      model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
       system: systemPrompt,
       messages: [
         {

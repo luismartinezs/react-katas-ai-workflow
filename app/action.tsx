@@ -20,8 +20,6 @@ async function submitKataIdea({
     return;
   }
 
-  console.log("submitKataIdea", title, description);
-
   const aiState = getMutableAIState<typeof AI>();
   const uiStream = createStreamableUI();
   uiStream.update(<Spinner />);
