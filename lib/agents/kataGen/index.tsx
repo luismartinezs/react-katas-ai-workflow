@@ -43,25 +43,25 @@ export async function genKata({
   // build initial version of code
   // build README
 
-  // if (mock) {
-  //   await sleep(300);
-  //   uiStream.update(
-  //     <Section title="Kata Display" separator={true}>
-  //       <KataDisplay
-  //         final={mockFinal}
-  //         initial={mockInitial}
-  //         readme={mockReadme}
-  //       />
-  //     </Section>
-  //   );
-  //   uiStream.done();
+  if (mock) {
+    await sleep(300);
+    uiStream.update(
+      <Section title="Kata Display" separator={true}>
+        <KataDisplay
+          final={mockFinal}
+          initial={mockInitial}
+          readme={mockReadme}
+        />
+      </Section>
+    );
+    uiStream.done();
 
-  //   return {
-  //     final: mockFinal,
-  //     initial: mockInitial,
-  //     readme: mockReadme,
-  //   };
-  // }
+    return {
+      final: mockFinal,
+      initial: mockInitial,
+      readme: mockReadme,
+    };
+  }
 
   let generatedKata: {
     final: string;

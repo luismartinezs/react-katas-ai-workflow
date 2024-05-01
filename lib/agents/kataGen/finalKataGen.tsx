@@ -5,7 +5,8 @@ import { openaiProvider } from "@/lib/openai";
 import { experimental_generateText, experimental_streamText } from "ai";
 import { createStreamableUI } from "ai/rsc";
 
-export const mockFinal = `import { useState, useEffect } from 'react'
+export const mockFinal = `\`\`\`tsx
+import { useState, useEffect } from 'react'
 
 interface WindowSize {
   width: number
@@ -48,7 +49,7 @@ export const WindowSize = (): React.JSX.Element => {
     </div>
   )
 }
-`;
+\`\`\``;
 
 const getUserPrompt = (title:string, description:string) => (`I'm gonna implement this kata:
 

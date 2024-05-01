@@ -12,7 +12,30 @@ type KataDisplayProps = {
   readme?: string | StreamableValue<string>;
 };
 
-const KataCode = ({
+const KataCodeDisplay = ({
+  pending,
+  content,
+}: {
+  pending?: boolean;
+  content?: string;
+}): React.JSX.Element => {
+  return (
+    <Card className="relative w-full p-4">
+      {content && (
+        <CopyToClipboardButton
+          textToCopy={content}
+          className="absolute top-4 right-4 z-10"
+        />
+      )}
+
+      <MemoizedReactMarkdown className="prose-sm prose-neutral prose-a:text-accent-100/50 overflow-auto">
+        {pending ? "Waiting for data..." : content || "No data"}
+      </MemoizedReactMarkdown>
+    </Card>
+  );
+};
+
+const KataCodeStreamable = ({
   content,
 }: {
   content: string | StreamableValue<string>;
@@ -23,21 +46,20 @@ const KataCode = ({
     return <div className="text-red-500">Error</div>;
   }
 
-  return (
-    <Card className="relative w-full p-4">
-      {data && (
-        <CopyToClipboardButton
-          textToCopy={data}
-          className="absolute top-4 right-4 z-10"
-        />
-      )}
-
-      <MemoizedReactMarkdown className="prose-sm prose-neutral prose-a:text-accent-100/50">
-        {pending ? "Waiting for data..." : data || "No data"}
-      </MemoizedReactMarkdown>
-    </Card>
-  );
+  return <KataCodeDisplay pending={pending} content={data} />;
 };
+
+const KataDisplayParser = ({
+  data,
+}: {
+  data?: string | StreamableValue<string>;
+}) =>
+  data &&
+  (typeof data === "string" ? (
+    <KataCodeDisplay content={data} />
+  ) : (
+    <KataCodeStreamable content={data} />
+  ));
 
 const KataDisplay = ({
   final,
@@ -54,13 +76,13 @@ const KataDisplay = ({
           <TabsTrigger value="readme">README.md</TabsTrigger>
         </TabsList>
         <TabsContent value="final">
-          {final && <KataCode content={final} />}
+          <KataDisplayParser data={final} />
         </TabsContent>
         <TabsContent value="initial">
-          {initial && <KataCode content={initial} />}
+          <KataDisplayParser data={initial} />
         </TabsContent>
         <TabsContent value="readme">
-          {readme && <KataCode content={readme} />}
+          <KataDisplayParser data={readme} />
         </TabsContent>
       </Tabs>
     </div>
