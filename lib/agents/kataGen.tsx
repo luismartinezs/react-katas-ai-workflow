@@ -180,9 +180,9 @@ export async function genKata({
   // build README
 
   if (mock) {
-    await sleep(700);
+    await sleep(300);
     uiStream.update(
-      <Section title="Kata" separator={true}>
+      <Section title="Kata Display" separator={true}>
         <KataDisplay
           final={mockFinal}
           initial={mockInitial}

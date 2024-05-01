@@ -157,7 +157,7 @@ export async function docsOutliner(
   );
 
   if (mock) {
-    await sleep(700);
+    await sleep(300);
     uiStream.update(
       <Section title="Outline" separator={true}>
         <Outline outline={mockOutline} />

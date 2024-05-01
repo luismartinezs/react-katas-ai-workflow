@@ -102,7 +102,7 @@ export async function kataBrainstormer(
   );
 
   if (mock) {
-    await sleep(700);
+    await sleep(300);
     uiStream.update(
       <Section title="Kata Ideas" separator={true}>
         <KataIdeas ideas={mockIdeas} />

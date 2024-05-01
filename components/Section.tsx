@@ -3,7 +3,9 @@
 import { cn } from '@/lib/utils'
 import {
   BookCheck,
+  Code,
   Image,
+  Lightbulb,
   ListTree,
   MessageCircleMore,
   Newspaper,
@@ -33,6 +35,12 @@ export const Section: React.FC<SectionProps> = ({
     case 'Outline':
       // eslint-disable-next-line jsx-a11y/alt-text
       icon = <ListTree size={18} className="mr-2" />
+      break
+    case 'Kata Ideas':
+      icon = <Lightbulb size={18} className="mr-2" />
+      break
+    case 'Kata' || 'Kata Display':
+      icon = <Code size={18} className="mr-2" />
       break
     default:
       icon = <Search size={18} className="mr-2" />
