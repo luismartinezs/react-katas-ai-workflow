@@ -28,7 +28,7 @@ const KataCodeDisplay = ({
         />
       )}
 
-      <MemoizedReactMarkdown className="prose-sm prose-neutral prose-a:text-accent-100/50 overflow-auto">
+      <MemoizedReactMarkdown className="prose-sm prose-neutral prose-a:text-accent-100/50 overflow-auto markdown-display">
         {pending ? "Waiting for data..." : content || "No data"}
       </MemoizedReactMarkdown>
     </Card>
