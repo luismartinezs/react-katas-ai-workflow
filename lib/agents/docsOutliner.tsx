@@ -40,47 +40,6 @@ const mockOutline = {
         "Fetching data with effects",
       ],
     },
-    {
-      title: "Handling Dependencies",
-      subitems: [
-        "Specifying reactive dependencies",
-        "Common mistakes with dependency arrays",
-        "Removing unnecessary dependencies",
-      ],
-    },
-    {
-      title: "Performance and Optimization",
-      subitems: [
-        "Avoiding unnecessary re-renders",
-        "Reducing the frequency of effect execution",
-        "Using `useMemo` and `useCallback` to optimize performance",
-      ],
-    },
-    {
-      title: "Troubleshooting Common Issues",
-      subitems: [
-        "Effect runs twice during component mounts",
-        "Infinite loops and effect re-executions",
-        "Flickering or unexpected visual outputs",
-        "Cleanup logic running unexpectedly",
-      ],
-    },
-    {
-      title: "Special Considerations",
-      subitems: [
-        "Differences between `useEffect` and `useLayoutEffect`",
-        "Effects in Strict Mode",
-        "Server vs. client rendering differences",
-      ],
-    },
-    {
-      title: "Best Practices and Recommendations",
-      subitems: [
-        "Writing resilient and isolated effects",
-        "Ensuring effects clean up after themselves",
-        "Strategies for debugging and refining effects",
-      ],
-    },
   ],
 };
 
@@ -154,7 +113,7 @@ For example:
     },
     ...
   ]
-}`
+}`;
 
 const OutlineSkeleton = () => (
   <div className="space-y-2">

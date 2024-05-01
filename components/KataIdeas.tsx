@@ -3,6 +3,8 @@
 import { PartialKataIdeas } from "@/lib/schema/kataIdeas";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { useActions, useUIState } from "ai/rsc";
+import { AI } from "@/app/action";
 
 type KataIdeasProps = {
   ideas: PartialKataIdeas;
@@ -11,17 +13,30 @@ type KataIdeasProps = {
 const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
   const { ideas: ideasArray } = ideas;
   const [selected, setSelected] = useState<string>();
+  const { submitKataIdea } = useActions();
+  const [messages, setMessages] = useUIState<typeof AI>();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!ideasArray || !selected) {
       return;
     }
 
-    console.log(ideasArray[+selected]);
+    const selectedIdea = ideasArray[+selected];
 
-    // TODO handle server action call
+    if (!selectedIdea) {
+      return;
+    }
+
+    const title = selectedIdea.title;
+    const description = selectedIdea.description;
+
+    const result = await submitKataIdea({
+      title,
+      description,
+    });
+    setMessages((prev) => [...prev, result]);
   };
 
   const handleChange = (event) => {
