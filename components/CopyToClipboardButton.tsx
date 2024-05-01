@@ -18,9 +18,14 @@ const CopyToClipboardButton = ({
   const [copiedText, copy] = useCopyToClipboard();
   const { toast } = useToast()
 
+  const isCodeBlock = textToCopy.startsWith("```");
+
+  console.log("isCodeBlock", isCodeBlock);
+
+
   async function handleClick() {
     try {
-      await copy(textToCopy);
+      await copy(isCodeBlock ? textToCopy.replace(/^```tsx\n/, '').replace(/\n```$/, '') : textToCopy);
       toast({
         title: "Copied text to clipboard",
         dismissTime: 1000
