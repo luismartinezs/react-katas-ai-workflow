@@ -1,4 +1,8 @@
+"use client";
+
 import { PartialKataIdeas } from "@/lib/schema/kataIdeas";
+import { useState } from "react";
+import { Button } from "./ui/button";
 
 type KataIdeasProps = {
   ideas: PartialKataIdeas;
@@ -6,6 +10,27 @@ type KataIdeasProps = {
 
 const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
   const { ideas: ideasArray } = ideas;
+  const [selected, setSelected] = useState<string>();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!ideasArray || !selected) {
+      return;
+    }
+
+    console.log(ideasArray[+selected]);
+
+    // TODO handle server action call
+  };
+
+  const handleChange = (event) => {
+    const { name, checked } = event.target;
+
+    if (checked) {
+      setSelected(name);
+    }
+  };
 
   if (!ideasArray) {
     return (
@@ -24,20 +49,42 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
   }
 
   return (
-    <div className="p-4 bg-gray-800 rounded-lg mt-5 shadow-lg">
-      {ideasArray.filter(Boolean).map((idea, index) => (
-        <div
-          key={index}
-          className="border-b border-gray-700 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0"
-        >
-          <h3 className="text-lmd text-white font-semibold mb-2">
-            {idea!.title}
-          </h3>
-          {/* TODO this decription should be rendered as markdown. the morphic project has something wired up */}
-          <p className="text-sm text-gray-300">{idea!.description}</p>
-        </div>
-      ))}
-    </div>
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 bg-gray-800 rounded-lg mt-5 shadow-lg"
+    >
+      {ideasArray.filter(Boolean).map((idea, index) => {
+        const id = `kata-idea-${index}`;
+        return (
+          <div
+            key={index}
+            className="border-b border-gray-700 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0"
+          >
+            <div className="flex gap-2 items-center justify-start">
+              <input
+                type="radio"
+                id={id}
+                name={index.toString()}
+                checked={selected === index.toString() || false}
+                onChange={handleChange}
+                className="w-4 h-4"
+              />
+              <label
+                className="text-lmd text-white font-semibold mb-2"
+                htmlFor={id}
+              >
+                {idea!.title}
+              </label>
+            </div>
+            {/* TODO this decription should be rendered as markdown. the morphic project has something wired up */}
+            <p className="text-sm text-gray-300">{idea!.description}</p>
+          </div>
+        );
+      })}
+      <Button type="submit" className="mt-2">
+        Submit
+      </Button>
+    </form>
   );
 };
 
