@@ -2,6 +2,7 @@ import { Spinner } from "@/components/spinner";
 import { env } from "@/env";
 import { docsOutliner } from "@/lib/agents";
 import { kataBrainstormer } from "@/lib/agents/kataBrainstormer";
+import { genKata } from "@/lib/agents/kataGen";
 import { createAI, createStreamableUI, getMutableAIState } from "ai/rsc";
 
 async function submitKataIdea({
@@ -32,18 +33,27 @@ async function submitKataIdea({
       content: `Build a kata for the following idea:\n\n"${title}"\n\n${description}`,
     },
   ]);
+  (async () => {
+    const kata = await genKata({
+      uiStream,
+      title,
+      description,
+      mock: !!env.MOCK,
+    });
 
-  aiState.done([
-    ...aiState.get(),
-    {
-      role: "assistant",
-      content: "This is your kata!",
-    },
-  ])
+    if (!kata) {
+      console.error("No kata response");
+      return;
+    }
 
-  uiStream.update(<div>this is your kata, here!</div>)
-
-  uiStream.done();
+    aiState.done([
+      ...aiState.get(),
+      {
+        role: "assistant",
+        content: JSON.stringify(kata),
+      },
+    ]);
+  })();
 
   return {
     id: Date.now(),
@@ -168,7 +178,7 @@ export const AI = createAI({
   actions: {
     submitDocs,
     submitCheckedItems,
-    submitKataIdea
+    submitKataIdea,
   },
   initialUIState,
   initialAIState,

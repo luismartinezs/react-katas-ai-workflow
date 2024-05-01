@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AI } from "./action";
 import { Header } from "@/components/Header";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className={cn(inter.className, "dark")}>
         <Header />
         <AI>{children}</AI>
+        <Toaster />
       </body>
     </html>
   );
