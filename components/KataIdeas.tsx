@@ -16,7 +16,7 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
   const { submitKataIdea } = useActions();
   const [messages, setMessages] = useUIState<typeof AI>();
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!ideasArray || !selected) {
@@ -39,12 +39,13 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
     setMessages((prev) => [...prev, result]);
   };
 
-  const handleChange = (event) => {
-    const { name, checked } = event.target;
+  const handleClick = (index: number) => {
+    setSelected(index.toString());
+  };
 
-    if (checked) {
-      setSelected(name);
-    }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+    setSelected(event.target.name);
   };
 
   if (!ideasArray) {
@@ -72,6 +73,7 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
         const id = `kata-idea-${index}`;
         return (
           <div
+            onClick={() => handleClick(index)}
             key={index}
             className="border-b border-gray-700 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0"
           >
