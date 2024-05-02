@@ -4,7 +4,7 @@ type HeroProps = {
 
 const Hero = ({}: HeroProps): React.JSX.Element => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen p-4">
+    <div className="container mx-auto flex flex-col items-center justify-center h-screen py-4 px-4 max-w-4xl xl:p-0">
       {/* <span className="text-xs text-gray-300">Product of the day</span> */}
       <h1 className="mt-2 text-4xl font-bold text-center text-white">Get tons of AI-generated React katas</h1>
       <p className="mt-4 text-center text-gray-300">
