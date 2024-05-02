@@ -29,7 +29,7 @@ export default function RootLayout({
       >
         <div>
           <Header className="sticky top-0 z-30" />
-          <main className="flex flex-grow overflow-auto flex-col px-4 py-16 md:p-24">
+          <main className="flex flex-grow overflow-auto flex-col">
             <AI>{children}</AI>
           </main>
         </div>

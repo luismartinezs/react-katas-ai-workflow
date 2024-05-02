@@ -8,7 +8,7 @@ import { mockFinal, mockInitial, mockReadme } from "@/lib/agents/kataGen";
 
 export default function Play() {
   return (
-    <div className="flex flex-col max-w-5xl mx-auto">
+    <div className="flex flex-col max-w-5xl mx-auto px-4 py-16 md:p-24">
       {/* <KataDisplay
         final={mockFinal}
         initial={mockInitial}
