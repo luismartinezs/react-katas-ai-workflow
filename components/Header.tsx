@@ -12,7 +12,7 @@ const Header = ({ className }: HeaderProps): React.JSX.Element => {
         "fixed z-20 flex w-full justify-between gap-4 border-b border-gray-700 bg-gray-900 p-4",
       )}
     >
-      <div>AI React Katas Builder</div>
+      <div>React Katas AI Maker</div>
       <nav>
         <ul className="flex gap-4">
           <li>
