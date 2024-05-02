@@ -20,9 +20,6 @@ const CopyToClipboardButton = ({
 
   const isCodeBlock = textToCopy.startsWith("```");
 
-  console.log("isCodeBlock", isCodeBlock);
-
-
   async function handleClick() {
     try {
       await copy(isCodeBlock ? textToCopy.replace(/^```tsx\n/, '').replace(/\n```$/, '') : textToCopy);

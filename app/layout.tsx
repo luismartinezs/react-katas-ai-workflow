@@ -28,7 +28,7 @@ export default function RootLayout({
         {renderSchemaTags()}
         <div>
           <Header className="sticky top-0 z-30" />
-          <main className="flex flex-grow overflow-auto flex-col">
+          <main className="flex flex-grow overflow-auto flex-col pt-10">
             <AI>{children}</AI>
           </main>
         </div>

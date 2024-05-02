@@ -2,14 +2,10 @@
 
 import { cn } from '@/lib/utils'
 import {
-  BookCheck,
+  BookText,
   Code,
-  Image,
   Lightbulb,
   ListTree,
-  MessageCircleMore,
-  Newspaper,
-  Repeat2,
   Search
 } from 'lucide-react'
 import React from 'react'
@@ -32,14 +28,16 @@ export const Section: React.FC<SectionProps> = ({
 }) => {
   let icon: React.ReactNode
   switch (title) {
+    case 'Documentation':
+      icon = <BookText size={18} className="mr-2" />
+      break
     case 'Outline':
-      // eslint-disable-next-line jsx-a11y/alt-text
       icon = <ListTree size={18} className="mr-2" />
       break
     case 'Kata Ideas':
       icon = <Lightbulb size={18} className="mr-2" />
       break
-    case 'Kata' || 'Kata Display':
+    case 'New Kata':
       icon = <Code size={18} className="mr-2" />
       break
     default:

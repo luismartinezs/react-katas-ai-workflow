@@ -31,7 +31,7 @@ export async function genKata({
     readme: createStreamableValue<string>(""),
   };
   const kataDisplaySection = (
-    <Section title="Kata Display" separator={true}>
+    <Section title="New Kata" separator={true}>
       <KataDisplay
         final={textStream.final.value}
         initial={textStream.initial.value}
@@ -46,7 +46,7 @@ export async function genKata({
   if (mock) {
     await sleep(300);
     uiStream.update(
-      <Section title="Kata Display" separator={true}>
+      <Section title="New Kata" separator={true}>
         <KataDisplay
           final={mockFinal}
           initial={mockInitial}

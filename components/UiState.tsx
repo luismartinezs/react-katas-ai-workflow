@@ -1,6 +1,6 @@
 "use client";
 
-import { AI } from "@/app/action";
+import { AI } from "@/app/play/action";
 import { useUIState } from "ai/rsc";
 import { Separator } from "./ui/separator";
 

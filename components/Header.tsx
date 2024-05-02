@@ -16,10 +16,10 @@ const Header = ({ className }: HeaderProps): React.JSX.Element => {
       <nav>
         <ul className="flex gap-4">
           <li>
-            <a href="/">Home</a>
+            <a href="/" className="text-white">Home</a>
           </li>
           <li>
-            <a href="/play">Play</a>
+            <a href="/play" className="text-white">Play</a>
           </li>
         </ul>
       </nav>

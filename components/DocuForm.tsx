@@ -14,14 +14,14 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Button } from "./ui/button";
-import { AI } from "@/app/action";
 import { useActions, useUIState } from "ai/rsc";
+import { AI } from "@/app/play/action";
 
 const formSchema = z.object({
   docs: z.string().min(3),
 });
 
-const ChatPanel = (): React.JSX.Element => {
+const DocuForm = (): React.JSX.Element => {
   const { submitDocs } = useActions<typeof AI>();
   const [messages, setMessages] = useUIState<typeof AI>();
 
@@ -37,16 +37,16 @@ const ChatPanel = (): React.JSX.Element => {
     // ✅ This will be type-safe and validated.
     const response = await submitDocs(values.docs);
     if (!response) {
-      console.error("No response from submitDocs")
+      console.error("No response from submitDocs");
       return;
     }
-    setMessages(prev => [...prev, response]);
-    form.setValue("docs", "")
+    setMessages((prev) => [...prev, response]);
+    form.setValue("docs", "");
   }
 
   return (
     <div>
-      <h2 className="text-xl font-bold">Chat panel</h2>
+      <h2 className="text-xl font-bold">Enter the source documentation</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -55,23 +55,37 @@ const ChatPanel = (): React.JSX.Element => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Documentation</FormLabel>
+                  <FormLabel>React Documentation</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <Textarea
+                      {...field}
+                      rows={8}
+                      placeholder="useActionState is a Hook that allows you to update state based on the result of a form action.
+
+const [state, formAction] = useActionState(fn, initialState, permalink?); ...
+"
+                    />
                   </FormControl>
                   <FormDescription>
-                    Paste here the source documentation for the kata.
+                    Paste here the source documentation to build the kata from.
+                    For example the content from a page from the{" "}
+                    <a target="_blank" href="https://react.dev/reference/react">
+                      React Docs
+                    </a>
+                    .
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               );
             }}
           />
-          <Button type="submit">Submit</Button>
+          <div className="flex justify-end w-full">
+            <Button type="submit">Submit docs</Button>
+          </div>
         </form>
       </Form>
     </div>
   );
 };
 
-export default ChatPanel;
+export default DocuForm;

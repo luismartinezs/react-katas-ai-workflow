@@ -4,7 +4,8 @@ import { PartialKataIdeas } from "@/lib/schema/kataIdeas";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { useActions, useUIState } from "ai/rsc";
-import { AI } from "@/app/action";
+import { WandSparkles } from "lucide-react";
+import { AI } from "@/app/play/action";
 
 type KataIdeasProps = {
   ideas: PartialKataIdeas;
@@ -50,7 +51,7 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
 
   if (!ideasArray) {
     return (
-      <div className="text-center text-gray-500 text-sm">
+      <div className="text-center text-sm text-gray-500">
         No kata ideas available.
       </div>
     );
@@ -58,50 +59,56 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
 
   if (!ideasArray || ideasArray.length === 0) {
     return (
-      <div className="text-center text-gray-500 text-sm">
+      <div className="text-center text-sm text-gray-500">
         No kata ideas available.
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 bg-gray-800 rounded-lg mt-5 shadow-lg"
-    >
-      {ideasArray.filter(Boolean).map((idea, index) => {
-        const id = `kata-idea-${index}`;
-        return (
-          <div
-            onClick={() => handleClick(index)}
-            key={index}
-            className="border-b border-gray-700 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0"
-          >
-            <div className="flex gap-2 items-center justify-start">
-              <input
-                type="radio"
-                id={id}
-                name={index.toString()}
-                checked={selected === index.toString() || false}
-                onChange={handleChange}
-                className="w-4 h-4"
-              />
-              <label
-                className="text-lmd text-white font-semibold mb-2"
-                htmlFor={id}
-              >
-                {idea!.title}
-              </label>
+    <div>
+      <p>Pick one of the ideas about which to generate the kata</p>
+      <form
+        onSubmit={handleSubmit}
+        className="mt-5 rounded-lg bg-gray-800 p-4 shadow-lg"
+      >
+        {ideasArray.filter(Boolean).map((idea, index) => {
+          const id = `kata-idea-${index}`;
+          return (
+            <div
+              onClick={() => handleClick(index)}
+              key={index}
+              className="mb-4 border-b border-gray-700 pb-4 last:mb-0 last:border-b-0 last:pb-0"
+            >
+              <div className="flex items-center justify-start gap-2">
+                <input
+                  type="radio"
+                  id={id}
+                  name={index.toString()}
+                  checked={selected === index.toString() || false}
+                  onChange={handleChange}
+                  className="h-4 w-4"
+                />
+                <label
+                  className="text-lmd mb-2 font-semibold text-white"
+                  htmlFor={id}
+                >
+                  {idea!.title}
+                </label>
+              </div>
+              {/* TODO this decription should be rendered as markdown. the morphic project has something wired up */}
+              <p className="text-sm text-gray-300">{idea!.description}</p>
             </div>
-            {/* TODO this decription should be rendered as markdown. the morphic project has something wired up */}
-            <p className="text-sm text-gray-300">{idea!.description}</p>
-          </div>
-        );
-      })}
-      <Button type="submit" className="mt-2">
-        Submit
-      </Button>
-    </form>
+          );
+        })}
+        <div className="mt-2 flex w-full justify-end">
+          <Button type="submit">
+            Generate kata!&nbsp;
+            <WandSparkles size={18} />
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

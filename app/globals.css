@@ -10,6 +10,10 @@ input[type="radio"] {
   /* @apply text-blue-500; */
 }
 
+a {
+  @apply text-primary-500;
+}
+
 .markdown-display {
   h1 {
     @apply text-3xl;
