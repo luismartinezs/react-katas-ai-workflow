@@ -1,16 +1,29 @@
-import { env } from "@/env";
-import { Badge } from "./ui/badge";
+import { cn } from "@/lib/utils";
 
-type HeaderProps = {};
+type HeaderProps = {
+  className?: string;
+};
 
-const mode = env.MOCK ? "mock" : "live";
-
-const Header = ({}: HeaderProps): React.JSX.Element => {
+const Header = ({ className }: HeaderProps): React.JSX.Element => {
   return (
-    <div className="flex p-4 w-full justify-between gap-4 fixed border-b border-gray-700 bg-gray-900 z-20">
+    <header
+      className={cn(
+        className,
+        "fixed z-20 flex w-full justify-between gap-4 border-b border-gray-700 bg-gray-900 p-4",
+      )}
+    >
       <div>AI React Katas Builder</div>
-      <Badge variant="secondary">{mode}</Badge>
-    </div>
+      <nav>
+        <ul className="flex gap-4">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/play">Play</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
   );
 };
 

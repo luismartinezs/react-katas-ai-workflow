@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { AI } from "./action";
+import { AI } from "./play/action";
 import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/toaster";
+import { Footer } from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,9 +21,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "dark")}>
-        <Header />
-        <AI>{children}</AI>
+      <body
+        className={cn(
+          inter.className,
+          "dark relative isolate flex h-full min-h-screen flex-col justify-between",
+        )}
+      >
+        <div>
+          <Header className="sticky top-0 z-30" />
+          <main className="flex flex-grow overflow-auto flex-col px-4 py-16 md:p-24">
+            <AI>{children}</AI>
+          </main>
+        </div>
+        <Footer className="flex-shrink mt-auto" />
         <Toaster />
       </body>
     </html>
