@@ -7,7 +7,7 @@ const Problem = ({}: ProblemProps): React.JSX.Element => {
         Just by reading the docs you don't learn
       </h2>
       <p className="mb-6">
-        With a React or Next new version every 5 seconds, it's hard to keep up :)
+        With a new React or Next version every 5 seconds, it's hard to keep up :)
       </p>
       <div className="flex items-center justify-center space-x-4">
         <div className="flex flex-col items-center">

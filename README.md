@@ -15,6 +15,7 @@ UI to autogenerate react katas or exercises
 
 ### post MVP
 
+- [ ] AI improves kata in terms of design and layout
 - [ ] Store the katas in a DB
   - [ ] make a community page
 - [ ] Able to regenerate kata along with additional user input
