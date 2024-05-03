@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Nav } from "./Nav";
 
 type HeaderProps = {
   className?: string;
@@ -13,16 +14,7 @@ const Header = ({ className }: HeaderProps): React.JSX.Element => {
       )}
     >
       <div>React Katas AI Maker</div>
-      <nav>
-        <ul className="flex gap-4">
-          <li>
-            <a href="/" className="text-white">Home</a>
-          </li>
-          <li>
-            <a href="/play" className="text-white">Play</a>
-          </li>
-        </ul>
-      </nav>
+      <Nav />
     </header>
   );
 };
