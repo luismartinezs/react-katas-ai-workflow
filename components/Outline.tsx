@@ -2,7 +2,7 @@
 
 import { PartialOutline } from "@/lib/schema/outline";
 import { useId, useState } from "react";
-import { useActions, useUIState } from "ai/rsc";
+import { useAIState, useActions, useUIState } from "ai/rsc";
 import { Button } from "./ui/button";
 import { AI } from "@/app/play/action";
 
@@ -31,7 +31,7 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
   const titleId = useId();
   // State to keep track of checked items
   const [checkedItem, setCheckedItem] = useState<string>();
-  const [messages, setMessages] = useUIState<typeof AI>();
+  const [_, setUi] = useUIState<typeof AI>();
 
   // Handler to toggle checkbox state
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,12 +50,13 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
 
     const response = await submitCheckedItems(
       checkedIdsToItems(checkedItem, outline),
+      checkedItem,
     );
     if (!response) {
       console.error("No response from submitCheckedItems");
       return;
     }
-    setMessages((prev) => [...prev, response]);
+    setUi([response]);
   }
 
   return (
@@ -106,7 +107,9 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
         <div className="mt-2 flex w-full justify-end">
           <Button type="submit">Generate kata ideas</Button>
         </div>
-        <p className="w-full text-right text-sm text-gray-300">Clicking the button will generate 3 ideas to build the kata from</p>
+        <p className="w-full text-right text-sm text-gray-300">
+          Clicking the button will generate 3 ideas to build the kata from
+        </p>
       </form>
     </div>
   );

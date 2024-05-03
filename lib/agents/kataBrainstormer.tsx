@@ -2,7 +2,7 @@ import { createStreamableUI } from "ai/rsc";
 import { experimental_streamObject } from "ai";
 import { Section } from "@/components/Section";
 import { env } from "@/env";
-import { DEFAULTS } from "../constants";
+import { DEFAULTS, sectionTitle } from "../constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sleep } from "../utils";
 import { KataIdeas } from "@/components/KataIdeas";
@@ -92,7 +92,7 @@ export async function kataBrainstormer(
   mock: boolean = false
 ) {
   uiStream.update(
-    <Section title="Kata Ideas" separator={true}>
+    <Section title={sectionTitle.ideas} separator={true}>
       <KataIdeasSkeleton />
     </Section>
   );
@@ -100,7 +100,7 @@ export async function kataBrainstormer(
   if (mock) {
     await sleep(300);
     uiStream.update(
-      <Section title="Kata Ideas" separator={true}>
+      <Section title={sectionTitle.ideas} separator={true}>
         <KataIdeas ideas={mockIdeas} />
       </Section>
     );
@@ -125,7 +125,7 @@ export async function kataBrainstormer(
       if (obj) {
         finalExercises = obj;
         uiStream.update(
-          <Section title="Kata Ideas" separator={true}>
+          <Section title={sectionTitle.ideas} separator={true}>
             <KataIdeas ideas={obj} />
           </Section>
         );

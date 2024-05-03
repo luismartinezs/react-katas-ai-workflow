@@ -2,24 +2,24 @@
 
 import { AI } from "@/app/play/action";
 import { useUIState } from "ai/rsc";
-import { Separator } from "./ui/separator";
+import DocuForm from "./DocuForm";
+import { Section } from "./Section";
+import { sectionTitle } from "@/lib/constants";
 
-const UiState = (): React.JSX.Element => {
+export function UiDisplay() {
   const [ui] = useUIState<typeof AI>();
 
   return (
-    <div className="my-4">
-      <h2 className="text-xl font-bold">UI State</h2>
-      <Separator />
-      {ui.length > 0 ? (
+    <div>
+      {ui.length ? (
         ui.map((message: { id: number; component: React.ReactNode }) => (
           <div key={message.id}>{message.component}</div>
         ))
       ) : (
-        <p>Nothing to show</p>
+        <Section title={sectionTitle.docs}>
+          <DocuForm />
+        </Section>
       )}
     </div>
   );
-};
-
-export default UiState;
+}

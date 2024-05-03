@@ -3,7 +3,7 @@ import { PartialOutline, outlineSchema } from "../schema/outline";
 import { experimental_streamObject } from "ai";
 import { Section } from "@/components/Section";
 import { env } from "@/env";
-import { DEFAULTS } from "../constants";
+import { DEFAULTS, sectionTitle } from "../constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import Outline from "@/components/Outline";
 import { sleep } from "../utils";
@@ -147,7 +147,7 @@ export async function docsOutliner(
   mock: boolean = false
 ): Promise<PartialOutline> {
   uiStream.update(
-    <Section title="Outline" separator={true}>
+    <Section title={sectionTitle.outline} separator={true}>
       <OutlineSkeleton />
     </Section>
   );
@@ -155,7 +155,7 @@ export async function docsOutliner(
   if (mock) {
     await sleep(300);
     uiStream.update(
-      <Section title="Outline" separator={true}>
+      <Section title={sectionTitle.outline} separator={true}>
         <Outline outline={mockOutline} />
       </Section>
     );
@@ -180,7 +180,7 @@ export async function docsOutliner(
       if (obj) {
         finalOutline = obj;
         uiStream.update(
-          <Section title="Outline" separator={true}>
+          <Section title={sectionTitle.outline} separator={true}>
             <Outline outline={obj} />
           </Section>
         );

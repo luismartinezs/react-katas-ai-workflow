@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { createStreamableUI, createStreamableValue } from "ai/rsc";
 import { Section } from "@/components/Section";
 import { KataDisplay } from "@/components/KataDisplay";
@@ -6,13 +5,17 @@ import { sleep } from "@/lib/utils";
 import { genKataFinal, mockFinal } from "./finalKataGen";
 import { genKataInitial, mockInitial } from "./initialKataGen";
 import { genKataReadme, mockReadme } from "./readmeGen";
-import { experimental_generateText } from "ai";
-import { DEFAULTS } from "@/lib/constants";
-import { openaiProvider } from "@/lib/openai";
+import { sectionTitle } from "@/lib/constants";
 
 export * from "./initialKataGen";
 export * from "./finalKataGen";
 export * from "./readmeGen";
+
+export interface Kata {
+  final: string;
+  initial: string;
+  readme: string;
+}
 
 export async function genKata({
   uiStream,
@@ -24,14 +27,14 @@ export async function genKata({
   title: string;
   description: string;
   mock: boolean;
-}) {
+}): Promise<Kata> {
   const textStream = {
     final: createStreamableValue<string>(""),
     initial: createStreamableValue<string>(""),
     readme: createStreamableValue<string>(""),
   };
   const kataDisplaySection = (
-    <Section title="New Kata" separator={true}>
+    <Section title={sectionTitle.kata} separator={true}>
       <KataDisplay
         final={textStream.final.value}
         initial={textStream.initial.value}
@@ -46,13 +49,13 @@ export async function genKata({
   if (mock) {
     await sleep(300);
     uiStream.update(
-      <Section title="New Kata" separator={true}>
+      <Section title={sectionTitle.kata} separator={true}>
         <KataDisplay
           final={mockFinal}
           initial={mockInitial}
           readme={mockReadme}
         />
-      </Section>
+      </Section>,
     );
     uiStream.done();
 
@@ -89,7 +92,7 @@ export async function genKata({
     const initialStream = await genKataInitial(
       generatedKata.final,
       title,
-      description
+      description,
     );
     for await (const delta of initialStream.textStream) {
       if (delta) {
@@ -106,7 +109,7 @@ export async function genKata({
       generatedKata.final,
       generatedKata.readme,
       title,
-      description
+      description,
     );
     for await (const delta of readmeStream.textStream) {
       if (delta) {

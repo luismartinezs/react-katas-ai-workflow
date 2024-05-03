@@ -23,7 +23,7 @@ const formSchema = z.object({
 
 const DocuForm = (): React.JSX.Element => {
   const { submitDocs } = useActions<typeof AI>();
-  const [messages, setMessages] = useUIState<typeof AI>();
+  const [_, setUi] = useUIState<typeof AI>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,20 +33,17 @@ const DocuForm = (): React.JSX.Element => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const response = await submitDocs(values.docs);
     if (!response) {
       console.error("No response from submitDocs");
       return;
     }
-    setMessages((prev) => [...prev, response]);
+    setUi([response]);
     form.setValue("docs", "");
   }
 
   return (
     <div>
-      <h2 className="text-xl font-bold">Enter the source documentation</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -55,7 +52,7 @@ const DocuForm = (): React.JSX.Element => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>React Documentation</FormLabel>
+                  <FormLabel>Paste React Documentation</FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}

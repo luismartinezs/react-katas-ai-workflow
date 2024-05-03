@@ -3,7 +3,7 @@
 import { PartialKataIdeas } from "@/lib/schema/kataIdeas";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { useActions, useUIState } from "ai/rsc";
+import { useAIState, useActions, useUIState } from "ai/rsc";
 import { WandSparkles } from "lucide-react";
 import { AI } from "@/app/play/action";
 
@@ -15,7 +15,7 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
   const { ideas: ideasArray } = ideas;
   const [selected, setSelected] = useState<string>();
   const { submitKataIdea } = useActions();
-  const [messages, setMessages] = useUIState<typeof AI>();
+  const [_, setUi] = useUIState<typeof AI>();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,11 +33,14 @@ const KataIdeas = ({ ideas }: KataIdeasProps): React.JSX.Element => {
     const title = selectedIdea.title;
     const description = selectedIdea.description;
 
-    const result = await submitKataIdea({
-      title,
-      description,
-    });
-    setMessages((prev) => [...prev, result]);
+    const result = await submitKataIdea(
+      {
+        title,
+        description,
+      },
+      selected,
+    );
+    setUi([result]);
   };
 
   const handleClick = (index: number) => {

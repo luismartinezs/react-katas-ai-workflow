@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import React from 'react'
 import { Separator } from './ui/separator'
+import { sectionTitle } from '@/lib/constants'
 
 type SectionProps = {
   children: React.ReactNode
@@ -28,16 +29,16 @@ export const Section: React.FC<SectionProps> = ({
 }) => {
   let icon: React.ReactNode
   switch (title) {
-    case 'Documentation':
+    case sectionTitle.docs:
       icon = <BookText size={18} className="mr-2" />
       break
-    case 'Outline':
+    case sectionTitle.outline:
       icon = <ListTree size={18} className="mr-2" />
       break
-    case 'Kata Ideas':
+    case sectionTitle.ideas:
       icon = <Lightbulb size={18} className="mr-2" />
       break
-    case 'New Kata':
+    case sectionTitle.kata:
       icon = <Code size={18} className="mr-2" />
       break
     default:
