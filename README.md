@@ -11,6 +11,7 @@ UI to autogenerate react katas or exercises
 - [x] Fix flow, now if I click the buttons, sections keep on being appended, make the flow usable but do not go fancy
 - [ ] Able to input open ai key through UI and store it in localstorage
 - [x] Add minimal landing that clearly explains what the app does
+- [ ] server actions should have a isGenerating thing or loading state to avoid showing some of the static text while LLM is thinking
 - [ ] Deploy
 
 ### post MVP

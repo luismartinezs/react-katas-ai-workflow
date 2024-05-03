@@ -1,9 +1,8 @@
-import { KataDisplay } from "@/components/KataDisplay";
+import { AiState, Config } from "@/app/play/action";
 import { env } from "@/env";
-import { DEFAULTS } from "@/lib/constants";
-import { openaiProvider } from "@/lib/openai";
-import { experimental_generateText, experimental_streamText } from "ai";
-import { createStreamableUI } from "ai/rsc";
+import { DEFAULTS, OpenaiModel } from "@/lib/constants";
+import { createOpenAI } from "@ai-sdk/openai";
+import { streamText } from "ai";
 
 export const mockFinal = `\`\`\`tsx
 import { useState, useEffect } from 'react'
@@ -51,7 +50,10 @@ export default (): React.JSX.Element => {
 }
 \`\`\``;
 
-const getUserPrompt = (title:string, description:string) => (`I'm gonna implement this kata:
+const getUserPrompt = (
+  title: string,
+  description: string,
+) => `I'm gonna implement this kata:
 
 Title: ${title}
 
@@ -79,22 +81,25 @@ The tech stack is: React 18, tailwind, typescript.
 
 Your task is to create the final, completed and solved version of the code for a "kata" that  serves to practice the above topic.
 
-Keep the code self contained, avoid using third party libraries, or mock them. The code must render some kind of UI that allows to visualize the result of the code execution in the browser. Provide only the code, written within a code block. The root or top level component should be a default export.`)
+Keep the code self contained, avoid using third party libraries, or mock them. The code must render some kind of UI that allows to visualize the result of the code execution in the browser. Provide only the code, written within a code block. The root or top level component should be a default export.`;
 
-const systemPrompt = `You are a extremely skillful senior React developer, specialized in crafting optimal functional components using modern state-of-the-art React. Your code always follows best coding practices and is expertly written and very readable. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`
+const systemPrompt = `You are a extremely skillful senior React developer, specialized in crafting optimal functional components using modern state-of-the-art React. Your code always follows best coding practices and is expertly written and very readable. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`;
 
 export async function genKataFinal(
-  title: string,
-  description: string,
+  {
+    title,
+    description,
+  }: {
+    title: string;
+    description: string;
+  },
+  { openaiModel = DEFAULTS.OPENAI_MODEL, openaiProvider }: Config,
 ) {
-  const result = await experimental_streamText({
-    model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+  const result = await streamText({
+    model: openaiProvider.chat(openaiModel),
     system: systemPrompt,
-    prompt: getUserPrompt(
-      title,
-      description
-    ),
-  })
+    prompt: getUserPrompt(title, description),
+  });
 
-  return result
+  return result;
 }

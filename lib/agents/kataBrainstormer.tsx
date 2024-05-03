@@ -1,13 +1,12 @@
 import { createStreamableUI } from "ai/rsc";
-import { experimental_streamObject } from "ai";
+import { streamObject } from "ai";
 import { Section } from "@/components/Section";
-import { env } from "@/env";
 import { DEFAULTS, sectionTitle } from "../constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sleep } from "../utils";
 import { KataIdeas } from "@/components/KataIdeas";
 import { PartialKataIdeas, kataIdeasSchema } from "../schema/kataIdeas";
-import { openaiProvider } from "../openai";
+import { Config } from "@/app/play/action";
 
 export const mockIdeas: PartialKataIdeas = {
   ideas: [
@@ -49,7 +48,7 @@ For example:
     ...
   ]
 }
-`
+`;
 
 const userPrompt = (topic: string) => `I want to create a kata about this:
 
@@ -87,14 +86,21 @@ const KataIdeasSkeleton = () => (
  *                                           either from the AI model or mock data.
  */
 export async function kataBrainstormer(
-  uiStream: ReturnType<typeof createStreamableUI>,
-  topic: string,
-  mock: boolean = false
+  {
+    uiStream,
+    topic,
+    mock = false,
+  }: {
+    uiStream: ReturnType<typeof createStreamableUI>;
+    topic: string;
+    mock: boolean;
+  },
+  { openaiModel = DEFAULTS.OPENAI_MODEL, openaiProvider }: Config,
 ) {
   uiStream.update(
     <Section title={sectionTitle.ideas} separator={true}>
       <KataIdeasSkeleton />
-    </Section>
+    </Section>,
   );
 
   if (mock) {
@@ -102,7 +108,7 @@ export async function kataBrainstormer(
     uiStream.update(
       <Section title={sectionTitle.ideas} separator={true}>
         <KataIdeas ideas={mockIdeas} />
-      </Section>
+      </Section>,
     );
     uiStream.done();
     return mockIdeas;
@@ -110,8 +116,8 @@ export async function kataBrainstormer(
 
   let finalExercises: PartialKataIdeas = {};
   try {
-    const result = await experimental_streamObject({
-      model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+    const result = await streamObject({
+      model: openaiProvider.chat(openaiModel),
       system: systemPrompt,
       messages: [
         {
@@ -127,7 +133,7 @@ export async function kataBrainstormer(
         uiStream.update(
           <Section title={sectionTitle.ideas} separator={true}>
             <KataIdeas ideas={obj} />
-          </Section>
+          </Section>,
         );
       }
     }

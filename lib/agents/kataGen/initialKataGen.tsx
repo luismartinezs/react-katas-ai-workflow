@@ -1,7 +1,7 @@
+import { Config } from "@/app/play/action";
 import { env } from "@/env";
 import { DEFAULTS } from "@/lib/constants";
-import { openaiProvider } from "@/lib/openai";
-import { experimental_streamText } from "ai";
+import { streamText } from "ai";
 
 export const mockInitial = `\`\`\`tsx
 import { useState, useEffect } from 'react'
@@ -52,7 +52,11 @@ export default (): React.JSX.Element => {
 }
 \`\`\``;
 
-const getUserPrompt = (finalKata:string, title:string, description:string) => (`This is a completed version of a React code:
+const getUserPrompt = (
+  finalKata: string,
+  title: string,
+  description: string,
+) => `This is a completed version of a React code:
 
 ${finalKata}
 
@@ -65,26 +69,27 @@ Title: ${title}
 Description:
 ${description}
 
-Add comments with "// TODO:" where the student needs to complete the code.
+Add comments with "// TODO:" where the student needs to complete the code. The student should add a significant part of the code, at least 4 or 5 lines of code. Provide only the code, written within a code block.`;
 
-Provide only the code, written within a code block.`)
-
-const systemPrompt = `You are a extremely skillful senior React developer, specialized in crafting optimal functional components using modern state-of-the-art React. Your code always follows best coding practices and is expertly written and very readable. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`
+const systemPrompt = `You are an expert React developer, specialized in teaching about React and creating coding exercises for students to learn React. You wisely and intelligently leave parts of the code blank so that when students fill them in, they optimize their learning. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`;
 
 export async function genKataInitial(
-  finalKata:string,
-  title: string,
-  description: string,
+  {
+    finalKata,
+    title,
+    description,
+  }: {
+    finalKata: string;
+    title: string;
+    description: string;
+  },
+  { openaiModel = DEFAULTS.OPENAI_MODEL, openaiProvider }: Config,
 ) {
-  const result = await experimental_streamText({
-    model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+  const result = await streamText({
+    model: openaiProvider.chat(openaiModel),
     system: systemPrompt,
-    prompt: getUserPrompt(
-      finalKata,
-      title,
-      description
-    ),
-  })
+    prompt: getUserPrompt(finalKata, title, description),
+  });
 
-  return result
+  return result;
 }

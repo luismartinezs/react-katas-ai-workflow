@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type CtaProps = {};
 
 const Cta = ({}: CtaProps): React.JSX.Element => {
@@ -20,9 +22,9 @@ const Cta = ({}: CtaProps): React.JSX.Element => {
           Don&apos;t waste time sifting through outdated tutorials or figuring
           out what to practice next...
         </p>
-        <button className="rounded bg-primary-600 px-6 py-2 font-bold text-black hover:bg-primary-700">
+        <Link href="/play" className="rounded bg-primary-600 px-6 py-2 font-bold text-black hover:bg-primary-700">
           Start generating katas!
-        </button>
+        </Link>
       </div>
     </div>
   );

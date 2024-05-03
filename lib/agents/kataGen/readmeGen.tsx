@@ -1,7 +1,7 @@
+import { Config } from "@/app/play/action";
 import { env } from "@/env";
 import { DEFAULTS } from "@/lib/constants";
-import { openaiProvider } from "@/lib/openai";
-import { experimental_streamText } from "ai";
+import { streamText } from "ai";
 
 export const mockReadme = `# Building a Custom useWindowSize Hook
 
@@ -53,7 +53,7 @@ const getUserPrompt = (
   finalCode: string,
   initialCode: string,
   title: string,
-  description: string
+  description: string,
 ) => `Your task is to provide the content of a README file for a kata or exercise that React students need to solve. I provide next the title, the starting incomplete code that the students need to complete and the final completed code
 
 Kata Title: ${title}
@@ -139,13 +139,21 @@ Now provide the README for the actual kata`;
 const systemPrompt = `You are an expert React developer, specialized in teaching about React and writing documentation for learning exercises for students. You write easily readable, instructive and well-crafted text. You always use modern React. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`;
 
 export async function genKataReadme(
-  final: string,
-  initial: string,
-  title: string,
-  description: string
+  {
+    final,
+    initial,
+    title,
+    description,
+  }: {
+    final: string;
+    initial: string;
+    title: string;
+    description: string;
+  },
+  { openaiModel = DEFAULTS.OPENAI_MODEL, openaiProvider }: Config,
 ) {
-  const result = await experimental_streamText({
-    model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+  const result = await streamText({
+    model: openaiProvider.chat(openaiModel),
     system: systemPrompt,
     prompt: getUserPrompt(final, initial, title, description),
   });

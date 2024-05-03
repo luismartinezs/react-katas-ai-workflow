@@ -4,14 +4,14 @@ import { KataDisplay } from "@/components/KataDisplay";
 import { KataIdeas } from "@/components/KataIdeas";
 import Outline from "@/components/Outline";
 import { Section } from "@/components/Section";
-import { Spinner } from "@/components/spinner";
 import { env } from "@/env";
 import { docsOutliner } from "@/lib/agents";
 import { kataBrainstormer } from "@/lib/agents/kataBrainstormer";
 import { Kata, genKata } from "@/lib/agents/kataGen";
-import { sectionTitle } from "@/lib/constants";
+import { DEFAULTS, OpenaiModel, sectionTitle } from "@/lib/constants";
 import { PartialKataIdeas } from "@/lib/schema/kataIdeas";
 import { PartialOutline } from "@/lib/schema/outline";
+import { createOpenAI } from "@ai-sdk/openai";
 import { createAI, createStreamableUI, getMutableAIState } from "ai/rsc";
 
 export interface AiState {
@@ -21,16 +21,84 @@ export interface AiState {
   ideas?: PartialKataIdeas;
   selectedIdeaId?: string;
   kata?: Kata | undefined;
+  openaiKey?: string;
+  openaiModel?: OpenaiModel;
 }
 
-export type UIState = {
+type UIItem = {
   id: number;
   component: React.ReactNode;
-}[];
+};
+
+export type UIState = UIItem[];
+
+export type Config = {
+  openaiProvider: ReturnType<typeof createOpenAI>;
+  openaiModel: OpenaiModel;
+};
 
 export type AiKey = keyof AiState;
 
 export type Step = "docs" | "outline" | "ideas" | "kata";
+
+async function softReset() {
+  // resets ai and ui state expect for openai key and model
+  "use server";
+
+  const aiState = getMutableAIState<typeof AI>();
+  aiState.update({
+    openaiKey: aiState.get().openaiKey,
+    openaiModel: aiState.get().openaiModel,
+  });
+
+  aiState.done(aiState.get());
+
+  return {
+    id: Date.now(),
+    component: (
+      <Section title={sectionTitle.docs}>
+        <DocuForm />
+      </Section>
+    ),
+  };
+}
+
+function apiKeyHandler({
+  key,
+  uiStream,
+  showDocuForm = false,
+}: {
+  uiStream: ReturnType<typeof createStreamableUI>;
+  key?: string;
+  showDocuForm?: boolean;
+}): UIItem | undefined {
+  if (!key) {
+    console.warn("Without key the AI will not work.");
+
+    uiStream.append(
+      <>
+        {showDocuForm && (
+          <div>
+            <Section title={sectionTitle.docs}>
+              <DocuForm />
+            </Section>
+          </div>
+        )}
+        <div className="my-4 rounded-md border border-red-800 bg-gray-900 p-4 text-red-500">
+          <p>Oops... it looks like you didn't enter an OpenAI API key...</p>
+        </div>
+      </>,
+    );
+
+    uiStream.done();
+
+    return {
+      id: Date.now(),
+      component: uiStream.value,
+    };
+  }
+  return;
+}
 
 function getLastStep(aiState: AiState): Step {
   if (aiState.kata) {
@@ -118,9 +186,13 @@ async function goToStep(step: Step) {
   // const aiState = getMutableAIState<typeof AI>();
   switch (step) {
     case "docs":
-      deleteAiStateKeys(
-        ["outline", "selectedOutlineId", "ideas", "selectedIdeaId", "kata"],
-      );
+      deleteAiStateKeys([
+        "outline",
+        "selectedOutlineId",
+        "ideas",
+        "selectedIdeaId",
+        "kata",
+      ]);
       break;
     case "outline":
       deleteAiStateKeys(["ideas", "selectedIdeaId", "kata"]);
@@ -141,7 +213,7 @@ async function goToStep(step: Step) {
   return {
     id: Date.now(),
     component: uiStream.value,
-  }
+  };
 }
 
 async function submitDocs(docsPrompt: string) {
@@ -170,6 +242,20 @@ async function submitDocs(docsPrompt: string) {
   const aiState = getMutableAIState<typeof AI>();
   const uiStream = createStreamableUI();
 
+  const finished = apiKeyHandler({
+    key: aiState.get().openaiKey,
+    uiStream,
+    showDocuForm: true,
+  });
+
+  if (finished) {
+    aiState.done({
+      ...aiState.get(),
+      docs: docsPrompt,
+    });
+    return finished;
+  }
+
   deleteAiStateKeys([
     "outline",
     "selectedOutlineId",
@@ -186,7 +272,19 @@ async function submitDocs(docsPrompt: string) {
   });
 
   (async () => {
-    const outline = await docsOutliner(uiStream, docsPrompt, !!env.MOCK);
+    const outline = await docsOutliner(
+      {
+        uiStream,
+        docsPrompt,
+        mock: !!env.MOCK,
+      },
+      {
+        openaiProvider: createOpenAI({
+          apiKey: aiState.get().openaiKey,
+        }),
+        openaiModel: aiState.get().openaiModel ?? DEFAULTS.OPENAI_MODEL,
+      },
+    );
 
     if (!outline) {
       console.error("No outline response");
@@ -236,8 +334,30 @@ async function submitCheckedItems(
 
   const topic = `${item}: ${subitem}`;
 
+  const finished = apiKeyHandler({
+    key: aiState.get().openaiKey,
+    uiStream,
+  });
+
+  if (finished) {
+    aiState.done({ ...aiState.get() });
+    return finished;
+  }
+
   (async () => {
-    const kataIdeas = await kataBrainstormer(uiStream, topic, !!env.MOCK);
+    const kataIdeas = await kataBrainstormer(
+      {
+        uiStream,
+        topic,
+        mock: !!env.MOCK,
+      },
+      {
+        openaiProvider: createOpenAI({
+          apiKey: aiState.get().openaiKey,
+        }),
+        openaiModel: aiState.get().openaiModel ?? DEFAULTS.OPENAI_MODEL,
+      },
+    );
 
     if (!kataIdeas) {
       console.error("No kata ideas response");
@@ -285,13 +405,31 @@ async function submitKataIdea(
   const uiStream = createStreamableUI();
   uiStream.update(<BleedSpinner />);
 
+  const finished = apiKeyHandler({
+    key: aiState.get().openaiKey,
+    uiStream,
+  });
+
+  if (finished) {
+    aiState.done({ ...aiState.get() });
+    return finished;
+  }
+
   (async () => {
-    const kata = await genKata({
-      uiStream,
-      title,
-      description,
-      mock: !!env.MOCK,
-    });
+    const kata = await genKata(
+      {
+        uiStream,
+        title,
+        description,
+        mock: !!env.MOCK,
+      },
+      {
+        openaiProvider: createOpenAI({
+          apiKey: aiState.get().openaiKey,
+        }),
+        openaiModel: aiState.get().openaiModel ?? DEFAULTS.OPENAI_MODEL,
+      },
+    );
 
     if (!kata) {
       console.error("No kata response");
@@ -310,15 +448,34 @@ async function submitKataIdea(
   };
 }
 
+async function submitOpenaiKey(secret: string) {
+  "use server";
+
+  if (!secret) {
+    console.warn("Without key the AI will not work.");
+  }
+
+  const aiState = getMutableAIState<typeof AI>();
+
+  aiState.update({
+    ...aiState.get(),
+    openaiKey: secret,
+  });
+
+  aiState.done(aiState.get());
+}
+
 const initialAIState: AiState = {};
 const initialUIState: UIState = [];
 
 export const AI = createAI({
   actions: {
+    softReset,
     submitDocs,
     submitCheckedItems,
     submitKataIdea,
     goToStep,
+    submitOpenaiKey,
   },
   initialUIState,
   initialAIState,

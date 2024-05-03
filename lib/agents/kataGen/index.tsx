@@ -5,7 +5,8 @@ import { sleep } from "@/lib/utils";
 import { genKataFinal, mockFinal } from "./finalKataGen";
 import { genKataInitial, mockInitial } from "./initialKataGen";
 import { genKataReadme, mockReadme } from "./readmeGen";
-import { sectionTitle } from "@/lib/constants";
+import { DEFAULTS, sectionTitle } from "@/lib/constants";
+import { Config } from "@/app/play/action";
 
 export * from "./initialKataGen";
 export * from "./finalKataGen";
@@ -17,17 +18,20 @@ export interface Kata {
   readme: string;
 }
 
-export async function genKata({
-  uiStream,
-  title,
-  description,
-  mock = false,
-}: {
-  uiStream: ReturnType<typeof createStreamableUI>;
-  title: string;
-  description: string;
-  mock: boolean;
-}): Promise<Kata> {
+export async function genKata(
+  {
+    uiStream,
+    title,
+    description,
+    mock = false,
+  }: {
+    uiStream: ReturnType<typeof createStreamableUI>;
+    title: string;
+    description: string;
+    mock: boolean;
+  },
+  config: Config,
+): Promise<Kata> {
   const textStream = {
     final: createStreamableValue<string>(""),
     initial: createStreamableValue<string>(""),
@@ -76,7 +80,7 @@ export async function genKata({
     readme: "",
   };
   try {
-    const finalStream = await genKataFinal(title, description);
+    const finalStream = await genKataFinal({ title, description }, config);
     for await (const delta of finalStream.textStream) {
       if (delta) {
         if (generatedKata.final.length === 0 && delta.length > 0) {
@@ -90,9 +94,12 @@ export async function genKata({
     // web design
     // gen initial kata
     const initialStream = await genKataInitial(
-      generatedKata.final,
-      title,
-      description,
+      {
+        finalKata: generatedKata.final,
+        title,
+        description,
+      },
+      config,
     );
     for await (const delta of initialStream.textStream) {
       if (delta) {
@@ -106,10 +113,13 @@ export async function genKata({
     }
     // gen readme
     const readmeStream = await genKataReadme(
-      generatedKata.final,
-      generatedKata.readme,
-      title,
-      description,
+      {
+        final: generatedKata.final,
+        initial: generatedKata.readme,
+        title,
+        description,
+      },
+      config,
     );
     for await (const delta of readmeStream.textStream) {
       if (delta) {

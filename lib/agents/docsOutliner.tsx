@@ -1,13 +1,13 @@
 import { createStreamableUI } from "ai/rsc";
 import { PartialOutline, outlineSchema } from "../schema/outline";
-import { experimental_streamObject } from "ai";
+import { streamObject } from "ai";
 import { Section } from "@/components/Section";
-import { env } from "@/env";
 import { DEFAULTS, sectionTitle } from "../constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import Outline from "@/components/Outline";
 import { sleep } from "../utils";
-import { openaiProvider } from "../openai";
+import { Config } from "@/app/play/action";
+import {Error} from "@/components/Error";
 
 const mockOutline = {
   outlineTitle: "Outline of the `useEffect` Hook Documentation",
@@ -40,7 +40,7 @@ const mockOutline = {
 };
 
 const userPrompt = (
-  docsPrompt: string
+  docsPrompt: string,
 ) => `I want to create simple exercises that I call "katas" to practice a certain aspect of React.
 
 I will first provide you with the documentation of the relevant documentation on the topic. Here they are:
@@ -116,7 +116,7 @@ const OutlineSkeleton = () => (
     <Skeleton className="h-4 w-[250px]" />
     <div className="space-y-2">
       <Skeleton className="h-4 w-[250px]" />
-      <div className="space-y-2 ml-2">
+      <div className="ml-2 space-y-2">
         <Skeleton className="h-4 w-[250px]" />
         <Skeleton className="h-4 w-[250px]" />
         <Skeleton className="h-4 w-[250px]" />
@@ -142,14 +142,21 @@ const OutlineSkeleton = () => (
  * and handles any errors during the process.
  */
 export async function docsOutliner(
-  uiStream: ReturnType<typeof createStreamableUI>,
-  docsPrompt: string,
-  mock: boolean = false
+  {
+    uiStream,
+    docsPrompt,
+    mock = false,
+  }: {
+    uiStream: ReturnType<typeof createStreamableUI>;
+    docsPrompt: string;
+    mock: boolean;
+  },
+  { openaiModel = DEFAULTS.OPENAI_MODEL, openaiProvider }: Config,
 ): Promise<PartialOutline> {
   uiStream.update(
     <Section title={sectionTitle.outline} separator={true}>
       <OutlineSkeleton />
-    </Section>
+    </Section>,
   );
 
   if (mock) {
@@ -157,7 +164,7 @@ export async function docsOutliner(
     uiStream.update(
       <Section title={sectionTitle.outline} separator={true}>
         <Outline outline={mockOutline} />
-      </Section>
+      </Section>,
     );
     uiStream.done();
     return mockOutline;
@@ -165,8 +172,8 @@ export async function docsOutliner(
 
   let finalOutline: PartialOutline = {};
   try {
-    const result = await experimental_streamObject({
-      model: openaiProvider.chat(env.OPENAI_API_MODEL || DEFAULTS.OPENAI_MODEL),
+    const result = await streamObject({
+      model: openaiProvider.chat(openaiModel),
       system: systemPrompt,
       messages: [
         {
@@ -182,13 +189,13 @@ export async function docsOutliner(
         uiStream.update(
           <Section title={sectionTitle.outline} separator={true}>
             <Outline outline={obj} />
-          </Section>
+          </Section>,
         );
       }
     }
   } catch (err) {
     console.error(err);
-    uiStream.update(<div>Error occurred while fetching data.</div>);
+    uiStream.update(<Error message="Error occurred while fetching data" />);
   } finally {
     uiStream.done();
   }
