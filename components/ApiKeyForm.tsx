@@ -39,7 +39,7 @@ const ApiKeyForm = ({ onSuccess }: ApiKeyFormProps): React.JSX.Element => {
         <Label htmlFor="key">Your secret key:</Label>
         <Input
           id="key"
-          placeholder="sk-proj-XH7cssC8lgZCDaUzTYNjT3BlbkFJmVLOgA9kQDxoYHG2XB30"
+          placeholder="your-openai-api-key"
           value={key}
           onChange={(e) => setKey(e.target.value)}
         />
