@@ -5,6 +5,6 @@ export const DEFAULTS = {
 export const sectionTitle = {
   docs: 'Documentation',
   outline: 'Outline',
-  ideas: 'Kata Ideas',
-  kata: 'New Kata'
+  ideas: 'Ideas',
+  kata: 'Kata'
 }

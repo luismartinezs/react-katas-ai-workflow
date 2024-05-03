@@ -1,3 +1,4 @@
+import { BleedSpinner } from "@/components/BleedSpinner";
 import DocuForm from "@/components/DocuForm";
 import { KataDisplay } from "@/components/KataDisplay";
 import { KataIdeas } from "@/components/KataIdeas";
@@ -88,7 +89,7 @@ function renderUIfromAI(
         </Section>,
       );
     default:
-      return uiStream.update(<Spinner />);
+      return uiStream.update(<div>Unknown AI state (likely a bug)</div>);
   }
   if (done) {
     uiStream.done();
@@ -177,7 +178,7 @@ async function submitDocs(docsPrompt: string) {
     "kata",
   ]);
 
-  uiStream.update(<Spinner />);
+  uiStream.update(<BleedSpinner />);
 
   aiState.update({
     ...aiState.get(),
@@ -231,7 +232,7 @@ async function submitCheckedItems(
     selectedOutlineId: id,
   });
   const uiStream = createStreamableUI();
-  uiStream.update(<Spinner />);
+  uiStream.update(<BleedSpinner />);
 
   const topic = `${item}: ${subitem}`;
 
@@ -282,7 +283,7 @@ async function submitKataIdea(
     selectedIdeaId: id,
   });
   const uiStream = createStreamableUI();
-  uiStream.update(<Spinner />);
+  uiStream.update(<BleedSpinner />);
 
   (async () => {
     const kata = await genKata({

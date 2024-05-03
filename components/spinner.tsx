@@ -1,7 +1,11 @@
-import { IconLogo } from "./icons"
+import { cn } from "@/lib/utils";
+import { IconLogo } from "./icons";
 
 // Based on: https://github.com/vercel/ai/blob/main/examples/next-ai-rsc/components/llm-stocks/spinner.tsx
-export const Spinner = () => (
+export const Spinner = ({
+  className,
+  ...rest
+}: React.SVGProps<SVGSVGElement> & { className?: string }) => (
   <svg
     fill="none"
     stroke="currentColor"
@@ -10,14 +14,15 @@ export const Spinner = () => (
     strokeLinecap="round"
     strokeLinejoin="round"
     xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 animate-spin stroke-zinc-400"
+    className={cn("h-5 w-5 animate-spin stroke-zinc-400", className)}
+    {...rest}
   >
     <path d="M12 3v3m6.366-.366-2.12 2.12M21 12h-3m.366 6.366-2.12-2.12M12 21v-3m-6.366.366 2.12-2.12M3 12h3m-.366-6.366 2.12 2.12"></path>
   </svg>
-)
+);
 
 export const LogoSpinner = () => (
-  <div className="p-4 border border-background">
-    <IconLogo className="w-4 h-4 animate-spin" />
+  <div className="border-background border p-4">
+    <IconLogo className="h-4 w-4 animate-spin" />
   </div>
-)
+);

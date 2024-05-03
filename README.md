@@ -8,7 +8,7 @@ UI to autogenerate react katas or exercises
 
 - [x] clean up ugly and nonsense things in the UI
 - [x] When I copy the code for the kata, the "```" is not copied
-- [ ] Fix flow, now if I click the buttons, sections keep on being appended, make the flow usable but do not go fancy
+- [x] Fix flow, now if I click the buttons, sections keep on being appended, make the flow usable but do not go fancy
 - [ ] Able to input open ai key through UI and store it in localstorage
 - [x] Add minimal landing that clearly explains what the app does
 - [ ] Deploy
