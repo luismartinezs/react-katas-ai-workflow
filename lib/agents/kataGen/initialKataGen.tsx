@@ -2,6 +2,7 @@ import { Config } from "@/app/play/action";
 import { env } from "@/env";
 import { DEFAULTS } from "@/lib/constants";
 import { streamText } from "ai";
+import { z } from "zod";
 
 export const mockInitial = `\`\`\`tsx
 import { useState, useEffect } from 'react'
@@ -69,7 +70,9 @@ Title: ${title}
 Description:
 ${description}
 
-Add comments with "// TODO:" where the student needs to complete the code. The student should add a significant part of the code, at least 4 or 5 lines of code. Provide only the code, written within a code block.`;
+Add comments with "// TODO:" where the student needs to complete the code. Add at least three // TODO comments for the student to complete.
+
+The student must be able to paste your response to a \`tsx\` file. Make sure your response contains only code within a code block wrapped in \`\`\`tsx and \`\`\` tags. If you must add a text description, add it as a comment within the code block. In any case avoid adding text outside the code block.`;
 
 const systemPrompt = `You are an expert React developer, specialized in teaching about React and creating coding exercises for students to learn React. You wisely and intelligently leave parts of the code blank so that when students fill them in, they optimize their learning. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`;
 

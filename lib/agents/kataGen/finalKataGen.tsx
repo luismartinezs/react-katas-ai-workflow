@@ -81,7 +81,9 @@ The tech stack is: React 18, tailwind, typescript.
 
 Your task is to create the final, completed and solved version of the code for a "kata" that  serves to practice the above topic.
 
-Keep the code self contained, avoid using third party libraries, or mock them. The code must render some kind of UI that allows to visualize the result of the code execution in the browser. Provide only the code, written within a code block. The root or top level component should be a default export.`;
+Keep the code self contained. The code must render some kind of UI that allows to visualize the result of the code execution in the browser. Provide only the code, written within a code block. The root or top level component should be a default export. Avoid third party API calls at all costs. If an API call is a must, always mock it, never do an API call to a real third party service.
+
+Make sure your response contains only code within a code block wrapped in \`\`\`tsx and \`\`\` tags. The component name must be two words and must avoid the word "component".`;
 
 const systemPrompt = `You are a extremely skillful senior React developer, specialized in crafting optimal functional components using modern state-of-the-art React. Your code always follows best coding practices and is expertly written and very readable. You always abstain from using old React, e.g. you abstain from using class components, PropTypes, higher order components or lifecycle methods`;
 

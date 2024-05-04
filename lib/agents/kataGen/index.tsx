@@ -5,7 +5,7 @@ import { sleep } from "@/lib/utils";
 import { genKataFinal, mockFinal } from "./finalKataGen";
 import { genKataInitial, mockInitial } from "./initialKataGen";
 import { genKataReadme, mockReadme } from "./readmeGen";
-import { DEFAULTS, sectionTitle } from "@/lib/constants";
+import { sectionTitle } from "@/lib/constants";
 import { Config } from "@/app/play/action";
 
 export * from "./initialKataGen";

@@ -12,7 +12,7 @@ import { DEFAULTS, OpenaiModel, sectionTitle } from "@/lib/constants";
 import { PartialKataIdeas } from "@/lib/schema/kataIdeas";
 import { PartialOutline } from "@/lib/schema/outline";
 import { createOpenAI } from "@ai-sdk/openai";
-import { createAI, createStreamableUI, getMutableAIState } from "ai/rsc";
+import { createAI, createStreamableUI, createStreamableValue, getMutableAIState } from "ai/rsc";
 
 export interface AiState {
   docs?: string;
@@ -442,6 +442,7 @@ async function submitKataIdea(
       ...aiState.get(),
       kata,
     });
+
   })();
 
   return {

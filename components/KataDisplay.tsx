@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { MemoizedReactMarkdown } from "./markdown";
 import { Card } from "./ui/card";
 import { Sparkles } from "lucide-react";
+import { BleedSpinner } from "./BleedSpinner";
 
 type KataDisplayProps = {
   final?: string | StreamableValue<string>;
@@ -30,7 +31,7 @@ const KataCodeDisplay = ({
       )}
 
       <MemoizedReactMarkdown className="prose-sm prose-neutral prose-a:text-accent-100/50 markdown-display overflow-auto">
-        {pending ? "Waiting for data..." : content || "No data"}
+        {pending ? "Generating..." : content || "No data"}
       </MemoizedReactMarkdown>
     </Card>
   );
@@ -67,6 +68,12 @@ const KataDisplay = ({
   initial,
   readme,
 }: KataDisplayProps): React.JSX.Element => {
+  const finalVal = useStreamableValue(final);
+  const initialVal = useStreamableValue(initial);
+  const readmeVal = useStreamableValue(readme);
+
+  const pending = finalVal[2] || initialVal[2] || readmeVal[2];
+
   return (
     <div className="my-4 w-full">
       <div className="flex gap-1">
@@ -75,12 +82,18 @@ const KataDisplay = ({
         </h2>
         <Sparkles />
       </div>
-      <p className="mt-1">Your new kata has been created!</p>
-      <ol className="my-2 ml-4 list-decimal space-y-2">
-        <li>Copy the initial version of the kata into a React project</li>
-        <li>Read the README file to understand the assignment</li>
-        <li>Peek at the final version for the solution</li>
-      </ol>
+      {pending ? (
+        <BleedSpinner />
+      ) : (
+        <>
+          <p className="mt-1">Your new kata has been created!</p>
+          <ol className="my-2 ml-4 list-decimal space-y-2">
+            <li>Copy the initial version of the kata into a React project</li>
+            <li>Read the README file to understand the assignment</li>
+            <li>Peek at the final version for the solution</li>
+          </ol>
+        </>
+      )}
       <Tabs defaultValue="final" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="final">Final</TabsTrigger>
