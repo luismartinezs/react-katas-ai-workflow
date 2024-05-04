@@ -2,7 +2,7 @@
 
 import { PartialOutline } from "@/lib/schema/outline";
 import { useId, useState } from "react";
-import { useAIState, useActions, useUIState } from "ai/rsc";
+import { useActions, useUIState } from "ai/rsc";
 import { Button } from "./ui/button";
 import { AI } from "@/app/play/action";
 
@@ -14,6 +14,7 @@ function checkedIdsToItems(
 ): {
   item: string;
   subitem: string;
+  description: string;
 } {
   const [itemIndex, subitemIndex] = checkedItem.split("_").slice(1);
   const item = outline.items && outline.items[Number(itemIndex)];
@@ -22,7 +23,8 @@ function checkedIdsToItems(
 
   return {
     item: itemLabel,
-    subitem: subitem || "",
+    subitem: subitem?.title || "",
+    description: subitem?.description || "",
   };
 }
 
@@ -76,12 +78,12 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
             .map((item, _idx) => (
               <li key={_idx}>
                 <div className="mb-2">{item?.title}</div>
-                <ul className="space-y-2">
+                <ul className="space-y-4">
                   {item?.subitems?.map((subitem, _jdx) => {
                     const currentId = `cbx_${_idx}_${_jdx}`;
                     return (
                       <li key={currentId}>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-start space-x-2">
                           <input
                             // should be radio
                             type="radio"
@@ -94,7 +96,7 @@ const Outline = ({ outline }: OutlineProps): React.JSX.Element => {
                             htmlFor={currentId}
                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
-                            {subitem}
+                            {subitem?.title}: <span className="text-gray-400">{subitem?.description}</span>
                           </label>
                         </div>
                       </li>

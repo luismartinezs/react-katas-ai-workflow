@@ -9,18 +9,18 @@ type ErrorProps = {
 };
 
 const Error = ({ message }: ErrorProps): React.JSX.Element => {
-  const { softReset } = useActions();
+  // const { softReset } = useActions();
   const [_, setUi] = useUIState<typeof AI>();
 
-  async function handleClick() {
-    const result = await softReset();
-    setUi([result]);
-  }
+  // async function handleClick() {
+  //   const result = await softReset();
+  //   setUi([result]);
+  // }
 
   return (
     <div>
       <div>{message}</div>
-      <Button onClick={handleClick}>Start again</Button>
+      {/* <Button onClick={handleClick}>Start again</Button> */}
     </div>
   );
 };

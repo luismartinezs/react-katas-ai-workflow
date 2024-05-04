@@ -8,9 +8,14 @@ import { z } from 'zod'
     {
       title: "outline item 1",
       subitems: [
-        "subitem 1", "subitem 2", "subitem 3"
+        {
+          title: "subitem 1",
+          description: "subitem description"
+        },
+        ...
       ]
-    }
+    },
+    ...
   ]
 }
 */
@@ -18,7 +23,10 @@ import { z } from 'zod'
 export const outlineItemSchema = z.object(
   {
     title: z.string().describe("The title of the oputline item"),
-    subitems: z.array(z.string()).nonempty().describe("A list of subitems for the outline item")
+    subitems: z.array(z.object({
+      title: z.string().describe("The title of the subitem"),
+      description: z.string().optional().describe("A description of the subitem in one short paragraph")
+    }))
   }
 ).required({
   title: true

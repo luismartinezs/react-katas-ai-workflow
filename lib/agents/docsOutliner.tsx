@@ -7,33 +7,109 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Outline from "@/components/Outline";
 import { sleep } from "../utils";
 import { Config } from "@/app/play/action";
-import {Error} from "@/components/Error";
+import { Error } from "@/components/Error";
 
 const mockOutline = {
-  outlineTitle: "Outline of the `useEffect` Hook Documentation",
+  outlineTitle: "Detailed Outline of the `useEffect` Hook Documentation",
   items: [
     {
       title: "Introduction to `useEffect`",
       subitems: [
-        "Definition and primary function",
-        "Basic syntax and parameters",
-        "When to use `useEffect`",
+        {
+          title: "React Hook",
+          description:
+            "`useEffect` is a React Hook used to synchronize a component with an external system.",
+        },
+        {
+          title: "Function Signature",
+          description:
+            "`useEffect(setup, dependencies?)` where setup is a function and dependencies is an optional array.",
+        },
+        {
+          title: "Basic Example",
+          description:
+            "Demonstrates how to use `useEffect` to handle side effects such as connecting to a network.",
+        },
       ],
     },
     {
-      title: "Basic Usage of `useEffect`",
+      title: "Usage Patterns",
       subitems: [
-        "Connecting to external systems",
-        "Setup and cleanup phases",
-        "Dependency array specification",
+        {
+          title: "Connecting to External Systems",
+          description:
+            "Guidelines and examples on using `useEffect` to maintain connections to external systems.",
+        },
+        {
+          title: "Controlling Non-React Widgets",
+          description:
+            "How to use `useEffect` to manipulate widgets that are not built with React.",
+        },
+        {
+          title: "Fetching Data",
+          description:
+            "Describes how to fetch data in a React component using `useEffect`.",
+        },
       ],
     },
     {
-      title: "Advanced Usage Scenarios",
+      title: "Advanced Usage",
       subitems: [
-        "Wrapping effects in custom Hooks",
-        "Controlling non-React widgets",
-        "Fetching data with effects",
+        {
+          title: "Custom Hooks",
+          description:
+            "Wrapping effects in custom hooks for reusability and abstraction.",
+        },
+        {
+          title: "Handling Updates with Dependencies",
+          description:
+            "Demonstration on specifying dependencies for `useEffect` to manage updates correctly.",
+        },
+        {
+          title: "Cleanup Function",
+          description:
+            "How to write a cleanup function within `useEffect` for clearing or resetting effects.",
+        },
+      ],
+    },
+    {
+      title: "Common Issues and Solutions",
+      subitems: [
+        {
+          title: "Effect Running Twice",
+          description:
+            "Handling scenarios where the `useEffect` runs twice due to React's Strict Mode.",
+        },
+        {
+          title: "Infinite Re-render Loops",
+          description:
+            "Identification and resolution of infinite loops caused by dependency changes.",
+        },
+        {
+          title: "Unnecessary Renders",
+          description:
+            "Optimizing by removing unnecessary dependencies to prevent excessive re-renders.",
+        },
+      ],
+    },
+    {
+      title: "Special Considerations",
+      subitems: [
+        {
+          title: "Strict Mode Extra Cycle",
+          description:
+            "Explanation on why Strict Mode in React triggers an extra setup and cleanup cycle during development.",
+        },
+        {
+          title: "Server vs. Client Rendering",
+          description:
+            "Handling differences in `useEffect` execution between server-side and client-side rendering.",
+        },
+        {
+          title: "Misuse of `useEffect`",
+          description:
+            "Advises on situations where `useEffect` might be overused or incorrectly applied.",
+        },
       ],
     },
   ],
@@ -65,7 +141,11 @@ Your response should be in this format:
     {
       "title": "outline item 1",
       "subitems": [
-        "subitem 1", "subitem 2", "subitem 3"
+        {
+          "title": "subitem 1",
+          "description": "subitem 1 description"
+        },
+        ...
       ]
     }
   ]
@@ -80,31 +160,71 @@ const systemPrompt = `You are specialized in turning technical documentation int
     {
       "title": "outline item 1",
       "subitems": [
-        "subitem 1", "subitem 2", "subitem 3"
+        {
+          "title": "subitem 1",
+          "description": "subitem description"
+        },
+        ...
       ]
-    }
+    },
+    ...
   ]
 }"
 
 For example:
 
 {
-  "outlineTitle":"Outline of the \`useEffect\` Hook Documentation",
-  "items":[
+  "outlineTitle": "Detailed Outline of the \`useEffect\` Hook Documentation",
+  "items": [
     {
-      "title":"Introduction to \`useEffect\`",
-      "subitems":[
-        "Definition and primary function",
-        "Basic syntax and parameters",
-        "When to use \`useEffect\`"
+      "title": "Introduction to \`useEffect\`",
+      "subitems": [
+        {
+          "title": "React Hook",
+          "description": "\`useEffect\` is a React Hook used to synchronize a component with an external system."
+        },
+        {
+          "title": "Function Signature",
+          "description": "\`useEffect(setup, dependencies?)\` where setup is a function and dependencies is an optional array."
+        },
+        {
+          "title": "Basic Example",
+          "description": "Demonstrates how to use \`useEffect\` to handle side effects such as connecting to a network."
+        }
       ]
     },
     {
-      "title":"Basic Usage of \`useEffect\`",
-      "subitems":[
-        "Connecting to external systems",
-        "Setup and cleanup phases",
-        "Dependency array specification"
+      "title": "Usage Patterns",
+      "subitems": [
+        {
+          "title": "Connecting to External Systems",
+          "description": "Guidelines and examples on using \`useEffect\` to maintain connections to external systems."
+        },
+        {
+          "title": "Controlling Non-React Widgets",
+          "description": "How to use \`useEffect\` to manipulate widgets that are not built with React."
+        },
+        {
+          "title": "Fetching Data",
+          "description": "Describes how to fetch data in a React component using \`useEffect\`."
+        }
+      ]
+    },
+    {
+      "title": "Advanced Usage",
+      "subitems": [
+        {
+          "title": "Custom Hooks",
+          "description": "Wrapping effects in custom hooks for reusability and abstraction."
+        },
+        {
+          "title": "Handling Updates with Dependencies",
+          "description": "Demonstration on specifying dependencies for \`useEffect\` to manage updates correctly."
+        },
+        {
+          "title": "Cleanup Function",
+          "description": "How to write a cleanup function within \`useEffect\` for clearing or resetting effects."
+        }
       ]
     },
     ...
