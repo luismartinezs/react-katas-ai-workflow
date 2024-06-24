@@ -12,7 +12,8 @@ export const sectionTitle = {
 
 export const openaiModels: OpenaiModel[] = [
   "gpt-3.5-turbo",
-  "gpt-4-turbo"
+  "gpt-4-turbo",
+  "gpt-4o"
 ]
 
-export type OpenaiModel = "gpt-3.5-turbo" | "gpt-4-turbo"
+export type OpenaiModel = "gpt-3.5-turbo" | "gpt-4-turbo" | "gpt-4o"
