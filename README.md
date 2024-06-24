@@ -10,12 +10,12 @@ UI to autogenerate react katas or exercises
 - [x] When I copy the code for the kata, the "```" is not copied
 - [x] Fix flow, now if I click the buttons, sections keep on being appended, make the flow usable but do not go fancy
 - [-] Able to input open ai key through UI and store it in localstorage
-- [ ] Implement token payment system
-  - [ ] Stripe checkout
-  - [ ] Token storage in convex DB
+- [-] Implement token payment system
+  - [-] Stripe checkout
+  - [-] Token storage in convex DB
 - [x] Add minimal landing that clearly explains what the app does
 - [x] server actions should have a isGenerating thing or loading state to avoid showing some of the static text while LLM is thinking
-- [ ] Deploy
+- [x] Deploy
 
 ### post MVP
 
