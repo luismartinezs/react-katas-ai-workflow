@@ -291,6 +291,8 @@ export async function docsOutliner(
   }
 
   let finalOutline: PartialOutline = {};
+  console.log(openaiModel);
+
   try {
     const result = await streamObject({
       model: openaiProvider.chat(openaiModel),

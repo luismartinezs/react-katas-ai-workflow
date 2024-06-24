@@ -21,8 +21,8 @@ export interface AiState {
   ideas?: PartialKataIdeas;
   selectedIdeaId?: string;
   kata?: Kata | undefined;
-  // openaiKey?: string;
-  // openaiModel?: OpenaiModel;
+  openaiKey?: string;
+  openaiModel?: OpenaiModel;
 }
 
 type UIItem = {
@@ -243,7 +243,7 @@ async function submitDocs(docsPrompt: string) {
   const uiStream = createStreamableUI();
 
   const finished = apiKeyHandler({
-    key: env.OPENAI_API_KEY,
+    key: aiState.get().openaiKey,
     uiStream,
     showDocuForm: true,
   });
@@ -271,6 +271,9 @@ async function submitDocs(docsPrompt: string) {
     docs: docsPrompt,
   });
 
+  console.log(aiState.get().openaiKey);
+
+
   (async () => {
     const outline = await docsOutliner(
       {
@@ -280,9 +283,9 @@ async function submitDocs(docsPrompt: string) {
       },
       {
         openaiProvider: createOpenAI({
-          apiKey: env.OPENAI_API_KEY,
+          apiKey: aiState.get().openaiKey,
         }),
-        openaiModel: env.OPENAI_API_MODEL as OpenaiModel ?? DEFAULTS.OPENAI_MODEL,
+        openaiModel: aiState.get().openaiModel ?? DEFAULTS.OPENAI_MODEL,
       },
     );
 
@@ -337,7 +340,7 @@ async function submitCheckedItems(
   const topic = `${item}: ${subitem}. ${description}`;
 
   const finished = apiKeyHandler({
-    key: env.OPENAI_API_KEY,
+    key: aiState.get().openaiKey,
     uiStream,
   });
 
@@ -355,9 +358,9 @@ async function submitCheckedItems(
       },
       {
         openaiProvider: createOpenAI({
-          apiKey: env.OPENAI_API_KEY,
+          apiKey: aiState.get().openaiKey,
         }),
-        openaiModel: env.OPENAI_API_MODEL as OpenaiModel ?? DEFAULTS.OPENAI_MODEL,
+        openaiModel: aiState.get().openaiModel ?? DEFAULTS.OPENAI_MODEL,
       },
     );
 
@@ -408,7 +411,7 @@ async function submitKataIdea(
   uiStream.update(<BleedSpinner />);
 
   const finished = apiKeyHandler({
-    key: env.OPENAI_API_KEY,
+    key: aiState.get().openaiKey,
     uiStream,
   });
 
@@ -427,9 +430,9 @@ async function submitKataIdea(
       },
       {
         openaiProvider: createOpenAI({
-          apiKey: env.OPENAI_API_KEY,
+          apiKey: aiState.get().openaiKey,
         }),
-        openaiModel: env.OPENAI_API_MODEL as OpenaiModel ?? DEFAULTS.OPENAI_MODEL,
+        openaiModel: aiState.get().openaiModel ?? DEFAULTS.OPENAI_MODEL,
       },
     );
 
@@ -451,22 +454,22 @@ async function submitKataIdea(
   };
 }
 
-// async function submitOpenaiKey(secret: string) {
-//   "use server";
+async function submitOpenaiKey(secret: string) {
+  "use server";
 
-//   if (!secret) {
-//     console.warn("Without key the AI will not work.");
-//   }
+  if (!secret) {
+    console.warn("Without key the AI will not work.");
+  }
 
-//   const aiState = getMutableAIState<typeof AI>();
+  const aiState = getMutableAIState<typeof AI>();
 
-//   aiState.update({
-//     ...aiState.get(),
-//     openaiKey: secret,
-//   });
+  aiState.update({
+    ...aiState.get(),
+    openaiKey: secret,
+  });
 
-//   aiState.done(aiState.get());
-// }
+  aiState.done(aiState.get());
+}
 
 const initialAIState: AiState = {};
 const initialUIState: UIState = [];
@@ -478,7 +481,7 @@ export const AI = createAI({
     submitCheckedItems,
     submitKataIdea,
     goToStep,
-    // submitOpenaiKey,
+    submitOpenaiKey,
   },
   initialUIState,
   initialAIState,

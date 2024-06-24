@@ -4,8 +4,7 @@ import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
-import { useAIState, useActions } from "ai/rsc";
-import { AI } from "@/app/play/action";
+import { useActions } from "ai/rsc";
 import { OpenaiModel, openaiModels } from "@/lib/constants";
 import {
   Select,
@@ -14,27 +13,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useStoreKey } from "./useStoreKey";
+import { useStoreModel } from "./useStoreModel";
 
 type ApiKeyFormProps = {
   onSuccess: () => void;
 };
 
 const ApiKeyForm = ({ onSuccess }: ApiKeyFormProps): React.JSX.Element => {
-  const [ai, setAi] = useAIState<typeof AI>();
-  const [key, setKey] = useState<string>(ai?.openaiKey ?? "");
-  const [model, setModel] = useState<OpenaiModel | "">(ai?.openaiModel ?? "");
+  const [storedKey, storeKey] = useStoreKey();
+  const [storedModel, storeModel] = useStoreModel();
+  const [key, setKey] = useState<string>(storedKey ?? "");
+  const [model, setModel] = useState<OpenaiModel>(storedModel);
   const { submitOpenaiKey } = useActions();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     await submitOpenaiKey(key);
+    storeKey(key);
+    storeModel(model);
 
     onSuccess();
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid w-full items-center gap-2">
         <Label htmlFor="key">Your secret key:</Label>
         <Input
@@ -63,7 +67,8 @@ const ApiKeyForm = ({ onSuccess }: ApiKeyFormProps): React.JSX.Element => {
         </Select>
       </div>
 
-      <div className="mt-2 flex w-full justify-end">
+      <div className="mt-2 flex w-full gap-3 justify-end">
+        {storedKey && <Button size="sm">Clear key</Button>}
         <Button type="submit" size="sm">
           Submit
         </Button>

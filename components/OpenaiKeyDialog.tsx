@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -33,9 +32,20 @@ const OpenaiKeyDialog = ({}: OpenaiKeyDialogProps): React.JSX.Element => {
         <DialogHeader>
           <DialogTitle>Enter your OpenAI key</DialogTitle>
           <DialogDescription>
-            We do not store this key, only send it to the OpenAI API. You can
-            get one from the{" "}
-            <a target="_blank" href="https://platform.openai.com/api-keys">openai site</a>.
+            We do not share this key with anyone, we only send it to the OpenAI
+            API. You can get one from the{" "}
+            <a target="_blank" href="https://platform.openai.com/api-keys">
+              openai site
+            </a>
+            . The key will be stored in your browser&apos;s local storage. To
+            minimize risk, create a new key and set your{" "}
+            <a
+              target="_blank"
+              href="https://platform.openai.com/settings/organization/limits"
+            >
+              openai spend limit
+            </a>{" "}
+            to a small number, and <u>clear key after use</u>.
           </DialogDescription>
         </DialogHeader>
         <ApiKeyForm onSuccess={() => setOpen(false)} />
