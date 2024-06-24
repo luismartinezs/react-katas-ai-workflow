@@ -85,7 +85,7 @@ function apiKeyHandler({
           </div>
         )}
         <div className="my-4 rounded-md border border-red-800 bg-gray-900 p-4 text-red-500">
-          <p>Oops... it looks like you didn't enter an OpenAI API key...</p>
+          <p>Oops... it looks like you didn&apos;t enter an OpenAI API key...</p>
         </div>
       </>,
     );

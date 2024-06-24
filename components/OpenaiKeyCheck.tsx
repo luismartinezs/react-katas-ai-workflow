@@ -19,7 +19,7 @@ const OpenaiKeyCheck = ({}: OpenaiKeyCheckProps): React.JSX.Element => {
       openaiKey: storedKey,
       openaiModel: storedModel,
     });
-  }, [storedKey, storedModel])
+  }, [storedKey, storedModel, setAi])
 
   if (storedKey) {
     // return green checkmark
