@@ -37,6 +37,11 @@ const ApiKeyForm = ({ onSuccess }: ApiKeyFormProps): React.JSX.Element => {
     onSuccess();
   }
 
+  function clearKey() {
+    storeKey("");
+    setKey("");
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid w-full items-center gap-2">
@@ -67,8 +72,12 @@ const ApiKeyForm = ({ onSuccess }: ApiKeyFormProps): React.JSX.Element => {
         </Select>
       </div>
 
-      <div className="mt-2 flex w-full gap-3 justify-end">
-        {storedKey && <Button size="sm">Clear key</Button>}
+      <div className="mt-2 flex w-full justify-end gap-3">
+        {storedKey && (
+          <Button size="sm" onClick={clearKey}>
+            Clear key
+          </Button>
+        )}
         <Button type="submit" size="sm">
           Submit
         </Button>
