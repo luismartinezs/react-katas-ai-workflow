@@ -16,11 +16,10 @@ const Cta = ({}: CtaProps): React.JSX.Element => {
       {/* Content */}
       <div className="z-10 flex flex-col items-center justify-center text-center">
         <h1 className="mb-4 text-5xl font-bold">
-          Boost Your Skills, Code, Excel
+          Be practicing React within 2 minutes
         </h1>
         <p className="mb-8">
-          Don&apos;t waste time sifting through outdated tutorials or figuring
-          out what to practice next...
+          Don&apos;t waste time thinking about exercises to practice React skills. Just input the part of the docs you want and get them
         </p>
         <Link href="/play" className="rounded bg-primary-600 px-6 py-2 font-bold text-black hover:bg-primary-700">
           Start generating katas!
